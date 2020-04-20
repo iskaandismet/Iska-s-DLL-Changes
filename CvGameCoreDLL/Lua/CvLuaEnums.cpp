@@ -207,6 +207,10 @@ int CvLuaEnums::pRegister(lua_State* L)
 	RegisterEnum(GAMEOPTION_NO_POLICIES);
 	RegisterEnum(GAMEOPTION_NO_HAPPINESS);
 	RegisterEnum(GAMEOPTION_NO_TUTORIAL);
+
+	RegisterEnum(GAMEOPTION_6PCS);
+	RegisterEnum(GAMEOPTION_NO_COLONIES);
+	RegisterEnum(GAMEOPTION_AI_ONLY);
 	RegisterEnum(NUM_GAMEOPTION_TYPES);
 
 

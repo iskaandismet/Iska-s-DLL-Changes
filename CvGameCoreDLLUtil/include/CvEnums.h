@@ -1087,6 +1087,10 @@ enum GameOptionTypes
 	GAMEOPTION_NO_TUTORIAL,
 	GAMEOPTION_NO_RELIGION,
 
+	GAMEOPTION_6PCS,
+	GAMEOPTION_NO_COLONIES,
+	GAMEOPTION_AI_ONLY,
+
 	// KWG: Please do add anymore enums.  Use the CvPreGame::GetGameOption which uses a text key.
 	//      These enums are shared between DLLs and would diverge if each added their own.
 	NUM_GAMEOPTION_TYPES
@@ -1599,6 +1603,8 @@ enum AutomateTypes
 	// Do not add any more sequential enums, add explicit key values (hash of text key)
 
 	AUTOMATE_TRADE		= 0x4bdc68d8,	// FString::Hash("AUTOMATE_TRADE");
+	AUTOMATE_MISSIONARY = 0x840842ea,	// FString::Hash("AUTOMATE_TRADE");
+	AUTOMATE_ARCHAEOLOGIST = 0x64f5468a,	// FString::Hash("AUTOMATE_TRADE");
 
 };
 

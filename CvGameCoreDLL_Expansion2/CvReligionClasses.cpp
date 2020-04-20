@@ -3641,6 +3641,11 @@ void CvCityReligions::RecomputeFollowers(CvReligiousFollowChangeReason eReason, 
 	ReligionTypes eMajority = GetReligiousMajority();
 	int iFollowers = GetNumFollowers(eMajority);
 
+	if (eMajority == RELIGION_PANTHEON && eOldMajorityReligion == NO_RELIGION)
+	{
+		CityConvertsPantheon();
+	}
+
 	if(eMajority != eOldMajorityReligion || iFollowers != iOldFollowers)
 	{
 		CityConvertsReligion(eMajority, eOldMajorityReligion, eResponsibleParty);
@@ -3911,6 +3916,36 @@ void CvCityReligions::CityConvertsReligion(ReligionTypes eMajority, ReligionType
 			bool bResult = false;
 			LuaSupport::CallHook(pkScriptSystem, "CityConvertsReligion", args.get(), bResult);
 		}
+	}
+}
+
+void CvCityReligions::CityConvertsPantheon()
+{
+	// Notification if the player's city was converted to a pantheon
+	PlayerTypes eOwnerPlayer = m_pCity->getOwner();
+	CvPlayerAI& kOwnerPlayer = GET_PLAYER(eOwnerPlayer);
+
+	if (kOwnerPlayer.GetNotifications())
+	{
+		Localization::String strMessage;
+		Localization::String strSummary;
+		strMessage = GetLocalizedText("TXT_KEY_NOTIFICATION_PANTHEON_SPREAD_TITLE", m_pCity->getName());
+		strSummary = Localization::Lookup("TXT_KEY_NOTIFICATION_PANTHEON_SPREAD_DESC");
+		kOwnerPlayer.GetNotifications()->Add(NOTIFICATION_PANTHEON_FOUNDED_ACTIVE_PLAYER, strMessage.toUTF8(), strSummary.toUTF8(), m_pCity->getX(), m_pCity->getY(), -1);
+	}
+
+	ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
+	if (pkScriptSystem)
+	{
+		CvLuaArgsHandle args;
+		args->Push(m_pCity->getOwner());
+		args->Push(m_pCity->getX());
+		args->Push(m_pCity->getY());
+
+		// Attempt to execute the game events.
+		// Will return false if there are no registered listeners.
+		bool bResult = false;
+		LuaSupport::CallHook(pkScriptSystem, "CityConvertsPantheon", args.get(), bResult);
 	}
 }
 

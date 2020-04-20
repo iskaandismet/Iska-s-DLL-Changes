@@ -401,6 +401,7 @@ private:
 	void SimulateFollowers();
 	void CopyToSimulatedStatus();
 	void CityConvertsReligion(ReligionTypes eMajority, ReligionTypes eOldMajority, PlayerTypes eResponsibleParty);
+	void CityConvertsPantheon();
 	void LogFollowersChange(CvReligiousFollowChangeReason eReason);
 
 	CvCity* m_pCity;

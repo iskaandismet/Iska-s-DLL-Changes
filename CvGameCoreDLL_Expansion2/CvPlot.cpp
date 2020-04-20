@@ -4006,7 +4006,7 @@ void CvPlot::SetTradeRoute(PlayerTypes ePlayer, bool bActive)
 	{
 		for(int iI = 0; iI < MAX_TEAMS; ++iI)
 		{
-			if(GET_TEAM((TeamTypes)iI).isAlive() && GC.getGame().getActiveTeam() == (TeamTypes)iI)
+			if ( GET_TEAM((TeamTypes)iI).isObserver() || ((GET_TEAM((TeamTypes)iI).isAlive()) && GC.getGame().getActiveTeam() == (TeamTypes)iI) )
 			{
 				if(isVisible((TeamTypes)iI))
 				{
@@ -5100,7 +5100,7 @@ void CvPlot::setOwner(PlayerTypes eNewValue, int iAcquiringCityID, bool bCheckUn
 
 			for(iI = 0; iI < MAX_TEAMS; ++iI)
 			{
-				if(GET_TEAM((TeamTypes)iI).isAlive())
+				if (GET_TEAM((TeamTypes)iI).isObserver() || GET_TEAM((TeamTypes)iI).isAlive())
 				{
 					updateRevealedOwner((TeamTypes)iI);
 				}
@@ -5968,7 +5968,7 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue, PlayerTypes eBuilder
 
 		for(iI = 0; iI < MAX_TEAMS; ++iI)
 		{
-			if(GET_TEAM((TeamTypes)iI).isAlive())
+			if (GET_TEAM((TeamTypes)iI).isObserver() || GET_TEAM((TeamTypes)iI).isAlive())
 			{
 				if(isVisible((TeamTypes)iI))
 				{
@@ -6384,7 +6384,7 @@ void CvPlot::setRouteType(RouteTypes eNewValue)
 
 		for(iI = 0; iI < MAX_TEAMS; ++iI)
 		{
-			if(GET_TEAM((TeamTypes)iI).isAlive())
+			if (GET_TEAM((TeamTypes)iI).isObserver() || GET_TEAM((TeamTypes)iI).isAlive())
 			{
 				if(isVisible((TeamTypes)iI))
 				{
@@ -6410,7 +6410,7 @@ void CvPlot::SetRoutePillaged(bool bPillaged)
 	{
 		for(int iI = 0; iI < MAX_TEAMS; ++iI)
 		{
-			if(GET_TEAM((TeamTypes)iI).isAlive() && GC.getGame().getActiveTeam() == (TeamTypes)iI)
+			if ( GET_TEAM((TeamTypes)iI).isObserver() || ((GET_TEAM((TeamTypes)iI).isAlive()) && GC.getGame().getActiveTeam() == (TeamTypes)iI) )
 			{
 				if(isVisible((TeamTypes)iI))
 				{

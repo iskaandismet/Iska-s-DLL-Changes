@@ -3132,58 +3132,34 @@ bool CvUnit::CanAutomate(AutomateTypes eAutomate, bool bTestVisibility) const
 		return false;
 	}
 
-	switch(eAutomate)
+	if(eAutomate == 1)
 	{
-	case AUTOMATE_BUILD:
-		if((AI_getUnitAIType() != UNITAI_WORKER) && (AI_getUnitAIType() != UNITAI_WORKER_SEA))
+		if(AI_getUnitAIType() == UNITAI_MISSIONARY || AI_getUnitAIType() == UNITAI_ARCHAEOLOGIST)
 		{
 			return false;
 		}
-
-		if(!bTestVisibility)
-		{
-			if(GC.getUNIT_WORKER_AUTOMATION_DISABLED() == 1)
-			{
-				return false;
-			}
-		}
-
-		break;
-
-	case AUTOMATE_EXPLORE:
-		if((GetBaseCombatStrength(true) == 0) || (getDomainType() == DOMAIN_AIR) || (getDomainType() == DOMAIN_IMMOBILE))
-		{
-			return false;
-		}
-
-		if(!bTestVisibility)
-		{
-			if(!GET_PLAYER(m_eOwner).GetHomelandAI()->IsAnyValidExploreMoves(this))
-			{
-				return false;
-			}
-		}
-
-		if (GC.getUNIT_AUTO_EXPLORE_FULL_DISABLED() == 1)
-		{
-			return false;
-		}
-
-		if(!bTestVisibility)
-		{
-			if(GC.getUNIT_AUTO_EXPLORE_DISABLED() == 1)
-			{
-				return false;
-			}
-		}
-		break;
-
-	default:
-		CvAssert(false);
-		break;
 	}
-
-	return true;
+	if(eAutomate == 2)
+	{
+		if(AI_getUnitAIType() != UNITAI_MISSIONARY)
+		{
+			return false;
+		}
+	}
+	if(eAutomate == 3)
+	{
+		if(AI_getUnitAIType() != UNITAI_ARCHAEOLOGIST)
+		{
+			return false;
+		}
+	}
+	if(eAutomate == 4)
+	{
+		if(m_pUnitInfo->GetCombat() <= 0)
+		{
+			return false;
+		}
+	}
 }
 
 

@@ -81,6 +81,13 @@ const char* ConvertGameOptionTypeToString(GameOptionTypes eOption)
 		return "GAMEOPTION_NO_TUTORIAL";
 	case GAMEOPTION_NO_RELIGION:
 		return "GAMEOPTION_NO_RELIGION";
+
+	case GAMEOPTION_6PCS:
+		return "GAMEOPTION_6PCS";
+	case GAMEOPTION_NO_COLONIES:
+		return "GAMEOPTION_NO_COLONIES";
+	case GAMEOPTION_AI_ONLY:
+		return "GAMEOPTION_AI_ONLY";
 	}
 
 	return NULL;

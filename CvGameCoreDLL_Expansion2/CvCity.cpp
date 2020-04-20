@@ -190,6 +190,8 @@ CvCity::CvCity() :
 	, m_bEverCapital("CvCity::m_bEverCapital", m_syncArchive)
 	, m_bIndustrialRouteToCapital("CvCity::m_bIndustrialRouteToCapital", m_syncArchive)
 	, m_bFeatureSurrounded("CvCity::m_bFeatureSurrounded", m_syncArchive)
+//	Iska Health---------------------------------------------------------------------
+	, m_iHealth("CvCity::iHealth", m_syncArchive)
 	, m_ePreviousOwner("CvCity::m_ePreviousOwner", m_syncArchive)
 	, m_eOriginalOwner("CvCity::m_eOriginalOwner", m_syncArchive)
 	, m_ePlayersReligion("CvCity::m_ePlayersReligion", m_syncArchive)
@@ -727,6 +729,9 @@ void CvCity::reset(int iID, PlayerTypes eOwner, int iX, int iY, bool bConstructo
 	m_bIndustrialRouteToCapital = false;
 	m_bFeatureSurrounded = false;
 	m_bOwedCultureBuilding = false;
+
+//	Iska Health---------------------------------------------------------------------
+	m_iHealth = 0;
 
 	m_eOwner = eOwner;
 	m_ePreviousOwner = NO_PLAYER;
@@ -1694,6 +1699,23 @@ void CvCity::updateYield()
 			pLoopPlot->updateYield();
 		}
 	}
+}
+
+//	Iska Health---------------------------------------------------------------------
+/// Return Health and TT
+int CvCity::GetHealthPerTurnAndToolTip() const
+{
+	VALIDATE_OBJECT
+	int iHealth;
+	CvString strHealthToolTip = Localization::Lookup("TXT_KEY_CITYVIEW_HEALTH_TT_HEADER");
+
+	BuildingTypes eRoyalLibrary = (BuildingTypes) GC.getInfoTypeForString("BUILDING_APOTHECARY", true);
+	if (eRoyalLibrary != NO_BUILDING && GetCityBuildings()->GetNumBuilding(eRoyalLibrary) > 0)
+	{
+		gDLL->UnlockAchievement(ACHIEVEMENT_XP2_19);
+	}
+
+	return 69;
 }
 
 //	--------------------------------------------------------------------------------
@@ -13526,6 +13548,9 @@ void CvCity::read(FDataStream& kStream)
 	kStream >> m_bIndustrialRouteToCapital;
 	kStream >> m_bFeatureSurrounded;
 
+//	Iska Health---------------------------------------------------------------------
+	kStream >> m_iHealth;
+
 	kStream >> m_eOwner;
 	kStream >> m_ePreviousOwner;
 	kStream >> m_eOriginalOwner;
@@ -13848,6 +13873,9 @@ void CvCity::write(FDataStream& kStream) const
 	kStream << m_bEverCapital;
 	kStream << m_bIndustrialRouteToCapital;
 	kStream << m_bFeatureSurrounded;
+	
+//	Iska Health---------------------------------------------------------------------
+	kStream << m_iHealth;
 
 	kStream << m_eOwner;
 	kStream << m_ePreviousOwner;

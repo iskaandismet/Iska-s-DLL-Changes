@@ -292,6 +292,9 @@ protected:
 
 	static int lIsNoOccupiedUnhappiness(lua_State* L);
 
+//	Iska Health---------------------------------------------------------------------
+	static int lGetHealth(lua_State* L);
+
 	static int lGetFood(lua_State* L);
 	static int lGetFoodTimes100(lua_State* L);
 	static int lSetFood(lua_State* L);

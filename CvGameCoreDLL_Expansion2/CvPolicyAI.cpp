@@ -334,6 +334,7 @@ void CvPolicyAI::DoChooseIdeology(CvPlayer *pPlayer)
 	PolicyBranchTypes eFreedomBranch = (PolicyBranchTypes)GC.getPOLICY_BRANCH_FREEDOM();
 	PolicyBranchTypes eAutocracyBranch = (PolicyBranchTypes)GC.getPOLICY_BRANCH_AUTOCRACY();
 	PolicyBranchTypes eOrderBranch = (PolicyBranchTypes)GC.getPOLICY_BRANCH_ORDER();
+	PolicyBranchTypes eHeritageBranch = (PolicyBranchTypes)GC.getPOLICY_BRANCH_HERITAGE();
 	if (eFreedomBranch == NO_POLICY_BRANCH_TYPE || eAutocracyBranch == NO_POLICY_BRANCH_TYPE || eOrderBranch == NO_POLICY_BRANCH_TYPE)
 	{
 		return;
@@ -544,6 +545,25 @@ void CvPolicyAI::DoChooseIdeology(CvPlayer *pPlayer)
 	{
 		eChosenBranch = eOrderBranch;
 	}
+
+	ReligionTypes ePlayerReligion = pPlayer->GetReligions()->GetReligionCreatedByPlayer();
+	if (pPlayer->GetReligions()->HasReligionInMostCities(ePlayerReligion) && ePlayerReligion > RELIGION_PANTHEON)
+	{
+		eChosenBranch = eHeritageBranch;
+		if (iAutocracyPriority >= (iFreedomPriority + iOrderPriority) * 2)
+		{
+			eChosenBranch = eAutocracyBranch;
+		}
+		else if (iOrderPriority >= (iFreedomPriority + iAutocracyPriority) * 2)
+		{
+			eChosenBranch = eOrderBranch;
+		}
+		else if (iFreedomPriority >= (iOrderPriority + iAutocracyPriority) * 2)
+		{
+			eChosenBranch = eFreedomBranch;
+		}
+	}
+
 	pPlayer->GetPlayerPolicies()->SetPolicyBranchUnlocked(eChosenBranch, true, false);
 	LogBranchChoice(eChosenBranch);
 }

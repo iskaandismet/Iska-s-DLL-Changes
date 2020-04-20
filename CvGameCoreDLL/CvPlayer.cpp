@@ -9642,6 +9642,19 @@ void CvPlayer::SetGoldenAgeProgressMeter(int iValue)
 void CvPlayer::ChangeGoldenAgeProgressMeter(int iChange)
 {
 	SetGoldenAgeProgressMeter(GetGoldenAgeProgressMeter() + iChange);
+
+	ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
+	if (pkScriptSystem)
+	{
+		CvLuaArgsHandle args;
+		args->Push(GetID());
+		args->Push(iChange);
+
+		// Attempt to execute the game events.
+		// Will return false if there are no registered listeners.
+		bool bResult = false;
+		LuaSupport::CallHook(pkScriptSystem, "ChangeGoldenAgeProgressMeter", args.get(), bResult);
+	}
 }
 
 //	--------------------------------------------------------------------------------

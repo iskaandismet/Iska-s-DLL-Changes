@@ -7283,6 +7283,10 @@ public:
 	{
 		return m_iPOLICY_BRANCH_ORDER;
 	}
+	inline int getPOLICY_BRANCH_HERITAGE()
+	{
+		return m_iPOLICY_BRANCH_HERITAGE;
+	}
 
 	inline int getMIN_DIG_SITES_PER_MAJOR_CIV()
 	{
@@ -9250,6 +9254,7 @@ protected:
 	int   m_iPOLICY_BRANCH_FREEDOM;
 	int   m_iPOLICY_BRANCH_AUTOCRACY;
 	int   m_iPOLICY_BRANCH_ORDER;
+	int   m_iPOLICY_BRANCH_HERITAGE;
 
 	// -- post defines --
 

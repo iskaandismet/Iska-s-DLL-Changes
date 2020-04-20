@@ -535,6 +535,11 @@ bool CvGame::InitMap(CvGameInitialItemsOverrides& kGameInitialItemsOverrides)
 				}
 			}
 		}
+
+		for (int iJ = 0; iJ < MAX_TEAMS; iJ++)
+		{
+			GET_TEAM(OBSERVER_TEAM).makeHasMet(static_cast<TeamTypes>(iJ), true);
+		}
 	}
 
 	return true;
@@ -4661,6 +4666,10 @@ bool CvGame::IsCityScreenBlocked()
 bool CvGame::CanOpenCityScreen(PlayerTypes eOpener, CvCity* pCity)
 {
 	if(eOpener == pCity->getOwner())
+	{
+		return true;
+	}
+	else if (GET_PLAYER(eOpener).isObserver())
 	{
 		return true;
 	}
