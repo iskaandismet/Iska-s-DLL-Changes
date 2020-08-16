@@ -29,6 +29,12 @@ MissionTypes s_eMISSION_ROUTE_TO = NO_MISSION;
 MissionTypes s_eMISSION_MOVE_TO_UNIT = NO_MISSION;
 MissionTypes s_eMISSION_SWAP_UNITS = NO_MISSION;
 MissionTypes s_eMISSION_SKIP = NO_MISSION;
+MissionTypes s_eMISSION_ARCHITECT = NO_MISSION;
+MissionTypes s_eMISSION_CURE = NO_MISSION;
+MissionTypes s_eMISSION_INNOCULATE = NO_MISSION;
+MissionTypes s_eMISSION_AUTHORITY = NO_MISSION;
+MissionTypes s_eMISSION_GOVERNMENT = NO_MISSION;
+MissionTypes s_eMISSION_PRESTIGE = NO_MISSION;
 MissionTypes s_eMISSION_SLEEP = NO_MISSION;
 MissionTypes s_eMISSION_ALERT = NO_MISSION;
 MissionTypes s_eMISSION_FORTIFY = NO_MISSION;
@@ -168,6 +174,12 @@ void CvTypes::AcquireTypes(Database::Connection& db)
 		kMissionTypesLookupTable.insert(make_pair(std::string("MISSION_ROUTE_TO"), &s_eMISSION_ROUTE_TO));
 		kMissionTypesLookupTable.insert(make_pair(std::string("MISSION_MOVE_TO_UNIT"), &s_eMISSION_MOVE_TO_UNIT));
 		kMissionTypesLookupTable.insert(make_pair(std::string("MISSION_SWAP_UNITS"), &s_eMISSION_SWAP_UNITS));
+		kMissionTypesLookupTable.insert(make_pair(std::string("MISSION_ARCHITECT"), &s_eMISSION_ARCHITECT));
+		kMissionTypesLookupTable.insert(make_pair(std::string("MISSION_CURE"), &s_eMISSION_CURE));
+		kMissionTypesLookupTable.insert(make_pair(std::string("MISSION_INNOCULATE"), &s_eMISSION_INNOCULATE));
+		kMissionTypesLookupTable.insert(make_pair(std::string("MISSION_AUTHORITY"), &s_eMISSION_AUTHORITY));
+		kMissionTypesLookupTable.insert(make_pair(std::string("MISSION_GOVERNMENT"), &s_eMISSION_GOVERNMENT));
+		kMissionTypesLookupTable.insert(make_pair(std::string("MISSION_PRESTIGE"), &s_eMISSION_PRESTIGE));
 		kMissionTypesLookupTable.insert(make_pair(std::string("MISSION_SKIP"), &s_eMISSION_SKIP));
 		kMissionTypesLookupTable.insert(make_pair(std::string("MISSION_SLEEP"), &s_eMISSION_SLEEP));
 		kMissionTypesLookupTable.insert(make_pair(std::string("MISSION_ALERT"), &s_eMISSION_ALERT));
@@ -325,6 +337,30 @@ const MissionTypes CvTypes::getMISSION_MOVE_TO_UNIT()
 const MissionTypes CvTypes::getMISSION_SWAP_UNITS()
 {
 	return s_eMISSION_SWAP_UNITS;
+}
+const MissionTypes CvTypes::getMISSION_ARCHITECT()
+{
+	return s_eMISSION_ARCHITECT;
+}
+const MissionTypes CvTypes::getMISSION_CURE()
+{
+	return s_eMISSION_CURE;
+}
+const MissionTypes CvTypes::getMISSION_INNOCULATE()
+{
+	return s_eMISSION_INNOCULATE;
+}
+const MissionTypes CvTypes::getMISSION_AUTHORITY()
+{
+	return s_eMISSION_AUTHORITY;
+}
+const MissionTypes CvTypes::getMISSION_GOVERNMENT()
+{
+	return s_eMISSION_GOVERNMENT;
+}
+const MissionTypes CvTypes::getMISSION_PRESTIGE()
+{
+	return s_eMISSION_PRESTIGE;
 }
 const MissionTypes CvTypes::getMISSION_SKIP()
 {

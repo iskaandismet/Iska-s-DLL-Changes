@@ -1455,7 +1455,8 @@ public:
 	bool isVisibleAlways() const;
 	bool isNukeImmune() const;
 	bool IsRough() const;
-	bool IsNaturalWonder() const;
+	bool IsNaturalWonder(bool orPseudoNatural = false) const;
+	bool IsPseudoNaturalWonder() const;
 
 	const char* getArtDefineTag() const;
 	void setArtDefineTag(const char* szTag);
@@ -1512,6 +1513,7 @@ protected:
 	bool m_bNukeImmune;
 	bool m_bRough;
 	bool m_bNaturalWonder;
+	bool m_bPseudoNaturalWonder;
 
 	// Set each time the game is started
 	bool m_bClearable;

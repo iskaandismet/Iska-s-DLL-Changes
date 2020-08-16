@@ -2039,6 +2039,17 @@ int CvTeamTechs::GetResearchCost(TechTypes eTech) const
 
 	int iCost = pkTechInfo->GetResearchCost();
 
+	//if ((m_pTeam->GetID() == NULL) || (m_pTeam->GetID() == NO_TEAM))
+	if (m_pTeam->getHandicapType() == NULL)
+	{
+		return 0;
+	}
+
+	if (m_pTeam->getHandicapType() == NULL)
+	{
+		return 0;
+	}
+
 	CvHandicapInfo* pkHandicapInfo = GC.getHandicapInfo(m_pTeam->getHandicapType());
 	if(pkHandicapInfo)
 	{

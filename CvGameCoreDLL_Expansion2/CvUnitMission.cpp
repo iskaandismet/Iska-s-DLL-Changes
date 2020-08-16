@@ -755,6 +755,22 @@ void CvUnitMission::ContinueMission(UnitHandle hUnit, int iSteps, int iETA)
 					hUnit->ChangeMissionTimer(1);
 				}
 			}
+
+			if (bDone)
+			{
+				ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
+				if(pkScriptSystem)
+				{
+					CvLuaArgsHandle args;
+					args->Push(hUnit);
+					args->Push(hUnit->getX());
+					args->Push(hUnit->getY());
+					args->Push(kMissionData.eMissionType);
+
+					bool bResult;
+					LuaSupport::CallHook(pkScriptSystem, "MissionCompleted", args.get(), bResult);
+				}
+			}
 		}
 
 		if(HeadMissionQueueNode(kMissionQueue) != NULL)
@@ -917,6 +933,38 @@ bool CvUnitMission::CanStartMission(UnitHandle hUnit, int iMission, int iData1, 
 		}
 		else
 			return false;
+	}
+	else if(iMission == CvTypes::getMISSION_ARCHITECT())
+	{
+		CvString szUnitType = hUnit->getUnitInfo().GetType();
+		if (szUnitType == "UNIT_ARCHITECT")
+		{
+			return true;
+		}
+	}
+	else if((iMission == CvTypes::getMISSION_CURE()) || (iMission == CvTypes::getMISSION_INNOCULATE()))
+	{
+		CvString szUnitType = hUnit->getUnitInfo().GetType();
+		if (szUnitType == "UNIT_DOCTOR")
+		{
+			return true;
+		}
+	}
+	else if((iMission == CvTypes::getMISSION_GOVERNMENT()) || (iMission == CvTypes::getMISSION_AUTHORITY()))
+	{
+		CvString szUnitType = hUnit->getUnitInfo().GetType();
+		if (szUnitType == "UNIT_DIGNITARY")
+		{
+			return true;
+		}
+	}
+	else if(iMission == CvTypes::getMISSION_PRESTIGE())
+	{
+		CvString szUnitType = hUnit->getUnitInfo().GetType();
+		if (szUnitType == "UNIT_ARTIST")
+		{
+			return true;
+		}
 	}
 	else if(iMission == CvTypes::getMISSION_SKIP())
 	{
@@ -1288,6 +1336,21 @@ void CvUnitMission::StartMission(UnitHandle hUnit)
 	}
 	else
 	{
+		ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
+		if(pkScriptSystem)
+		{
+			CvLuaArgsHandle args;
+			args->Push(hUnit->getOwner());
+			args->Push(hUnit->GetID());
+			args->Push(hUnit->getX());
+			args->Push(hUnit->getY());
+			args->Push(pkQueueData->eMissionType);
+
+			bool bResult;
+			LuaSupport::CallHook(pkScriptSystem, "MissionStarted", args.get(), bResult);
+		}
+
+
 		CvAssertMsg(kUnitOwner.isTurnActive() || kUnitOwner.isHuman(), "It's expected that either the turn is active for this player or the player is human");
 
 		if(pkQueueData->eMissionType == CvTypes::getMISSION_SKIP())

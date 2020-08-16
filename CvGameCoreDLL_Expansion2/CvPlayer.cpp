@@ -9373,7 +9373,14 @@ int CvPlayer::GetJONSCulturePerTurnFromExcessHappiness() const
 /// Trait bonus which adds Culture for trade partners? 
 int CvPlayer::GetJONSCulturePerTurnFromTraits() const
 {
-	return GetPlayerTraits()->GetYieldChangePerTradePartner(YIELD_CULTURE) * GetTrade()->GetNumDifferentTradingPartners();
+	//Edo gets culture bonus from any trade route
+	CvString strCivType = getCivilizationInfo().GetType();
+	int iChange = 0;
+	if (strCivType == "CIVILIZATION_ISKA_JAPAN")
+	{
+		iChange = 8 * GetTrade()->GetNumTradeRoutesUsed(true);
+	}
+	return (GetPlayerTraits()->GetYieldChangePerTradePartner(YIELD_CULTURE) * GetTrade()->GetNumDifferentTradingPartners()) + iChange;
 }
 
 //	--------------------------------------------------------------------------------
@@ -12273,8 +12280,9 @@ void CvPlayer::DoProcessGoldenAge()
 				// If it's the active player then show the popup
 				if(GetID() == GC.getGame().getActivePlayer())
 				{
-					// Don't show in MP
-					if(!GC.getGame().isNetworkMultiPlayer())	// KWG: Candidate for !GC.getGame().isOption(GAMEOPTION_SIMULTANEOUS_TURNS)
+					// Don't show in MP or if Heroic Age
+					BuildingTypes eHeroicAge = (BuildingTypes) GC.getInfoTypeForString("BUILDING_HEROIC_AGE", true);
+					if(!GC.getGame().isNetworkMultiPlayer() && eHeroicAge != NO_BUILDING && getCapitalCity()->GetCityBuildings()->GetNumBuilding(eHeroicAge) <= 0)	// KWG: Candidate for !GC.getGame().isOption(GAMEOPTION_SIMULTANEOUS_TURNS)
 					{
 						CvPopupInfo kPopupInfo(BUTTONPOPUP_GOLDEN_AGE_REWARD);
 						GC.GetEngineUserInterface()->AddPopup(kPopupInfo);
@@ -12693,6 +12701,18 @@ void CvPlayer::incrementGeneralsFromFaith()
 }
 
 //	--------------------------------------------------------------------------------
+int CvPlayer::getArchitectsFromFaith() const
+{
+	return m_iArchitectsFromFaith;
+}
+
+//	--------------------------------------------------------------------------------
+void CvPlayer::incrementArchitectsFromFaith()
+{
+	m_iArchitectsFromFaith++;
+}
+
+//	--------------------------------------------------------------------------------
 int CvPlayer::getAdmiralsFromFaith() const
 {
 	return m_iAdmiralsFromFaith;
@@ -12864,7 +12884,7 @@ void CvPlayer::DoUnitKilledCombat(PlayerTypes eKilledPlayer, UnitTypes eUnitType
 
 //	--------------------------------------------------------------------------------
 /// Do effects when a GP is consumed
-void CvPlayer::DoGreatPersonExpended(UnitTypes eGreatPersonUnit)
+void CvPlayer::DoGreatPersonExpended(UnitTypes eGreatPersonUnit, int iX, int iY)
 {
 	// Gold gained
 	int iExpendGold = GetGreatPersonExpendGold();

@@ -43,6 +43,9 @@
 #include "CvDllRandom.h"
 #include "CvDllUnit.h"
 
+// ls612: for Minidumps
+#include <dbghelp.h>
+
 // must be included after all other headers
 #include "LintFree.h"
 
@@ -1704,10 +1707,10 @@ CvGlobals::CvGlobals() :
 	m_iIDEOLOGY_SCORE_GUARDED(2),
 	m_iIDEOLOGY_SCORE_AFRAID(3),
 	m_iIDEOLOGY_SCORE_FRIENDLY(6),
-	m_iPOLICY_BRANCH_FREEDOM(9),
-	m_iPOLICY_BRANCH_AUTOCRACY(11),
-	m_iPOLICY_BRANCH_ORDER(10),
-	m_iPOLICY_BRANCH_HERITAGE(12),
+	m_iPOLICY_BRANCH_FREEDOM(12),
+	m_iPOLICY_BRANCH_AUTOCRACY(13),
+	m_iPOLICY_BRANCH_ORDER(14),
+	m_iPOLICY_BRANCH_HERITAGE(15),
 
 	m_iLEAGUE_SESSION_INTERVAL_BASE_TURNS(30),
 	m_iLEAGUE_SESSION_SOON_WARNING_TURNS(5),
@@ -1816,6 +1819,55 @@ CvGlobals::CvGlobals() :
 
 CvGlobals::~CvGlobals()
 {
+}
+
+/************************************************************************************************/
+/* MINIDUMP_MOD                           04/10/11                                terkhen       */
+/*                                                                                              */
+/* See http://www.debuginfo.com/articles/effminidumps.html                                      */
+/************************************************************************************************/
+// ls612: Originally for Civ 4, ported by me to Civ 5
+#pragma comment (lib, "dbghelp.lib")
+
+void CreateMiniDump(EXCEPTION_POINTERS *pep)
+{
+	/* Open a file to store the minidump. */
+	HANDLE hFile = CreateFile(_T("CvMiniDump.dmp"),
+	                          GENERIC_READ | GENERIC_WRITE,
+	                          0,
+	                          NULL,
+	                          CREATE_ALWAYS,
+	                          FILE_ATTRIBUTE_NORMAL,
+	                          NULL);
+
+	if((hFile == NULL) || (hFile == INVALID_HANDLE_VALUE)) {
+		_tprintf(_T("CreateFile failed. Error: %u \n"), GetLastError());
+		return;
+	}
+	/* Create the minidump. */
+	MINIDUMP_EXCEPTION_INFORMATION mdei;
+
+	mdei.ThreadId           = GetCurrentThreadId();
+	mdei.ExceptionPointers  = pep;
+	mdei.ClientPointers     = FALSE;
+
+	MINIDUMP_TYPE mdt       = MiniDumpNormal;
+
+	BOOL result = MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(),
+	                                hFile,
+	                                mdt,
+	                                (pep != NULL) ? &mdei : NULL,
+	                                NULL,
+	                                NULL);
+
+	/* Close the file. */
+	CloseHandle(hFile);
+}
+
+LONG WINAPI CustomFilter(EXCEPTION_POINTERS *ExceptionInfo)
+{
+	CreateMiniDump(ExceptionInfo);
+	return EXCEPTION_EXECUTE_HANDLER;
 }
 
 //

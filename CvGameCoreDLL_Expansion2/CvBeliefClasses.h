@@ -68,6 +68,7 @@ public:
 	int GetInquisitorPressureRetention() const;
 	int GetFaithBuildingTourism() const;
 
+	bool IsSharia() const;
 	bool IsPantheonBelief() const;
 	bool IsFounderBelief() const;
 	bool IsFollowerBelief() const;
@@ -151,6 +152,7 @@ protected:
 	int m_iInquisitorPressureRetention;
 	int m_iFaithBuildingTourism;
 
+	bool m_bSharia;
 	bool m_bPantheon;
 	bool m_bFounder;
 	bool m_bFollower;

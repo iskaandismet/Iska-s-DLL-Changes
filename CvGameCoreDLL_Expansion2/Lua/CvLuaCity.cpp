@@ -292,9 +292,6 @@ void CvLuaCity::PushMethods(lua_State* L, int t)
 
 	Method(IsNoOccupiedUnhappiness);
 
-//	Iska Health---------------------------------------------------------------------
-	Method(GetHealth);
-
 	Method(GetFood);
 	Method(GetFoodTimes100);
 	Method(SetFood);
@@ -2513,13 +2510,6 @@ int CvLuaCity::lGetLocalResourceWonderProductionMod(lua_State* L)
 int CvLuaCity::lChangeHealRate(lua_State* L)
 {
 	return BasicLuaMethod(L, &CvCity::changeHealRate);
-}
-
-//	Iska Health---------------------------------------------------------------------
-//int getHealth();
-int CvLuaCity::lGetHealth(lua_State* L)
-{
-	return BasicLuaMethod(L, &CvCity::GetHealth);
 }
 
 //------------------------------------------------------------------------------

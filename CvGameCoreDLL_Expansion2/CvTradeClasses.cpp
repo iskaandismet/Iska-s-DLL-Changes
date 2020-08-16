@@ -77,6 +77,42 @@ void CvGameTrade::DoTurn (void)
 //	--------------------------------------------------------------------------------
 bool CvGameTrade::CanCreateTradeRoute(CvCity* pOriginCity, CvCity* pDestCity, DomainTypes eDomain, TradeConnectionType eConnectionType, bool bIgnoreExisting, bool bCheckPath /*= true*/)
 {
+	//Edo-Japan doesn't get international Trade Routes
+	/*const char* szOriginCivKey = GET_PLAYER(pOriginCity->getOwner()).getCivilizationTypeKey();
+	const char* szDestCivKey = GET_PLAYER(pDestCity->getOwner()).getCivilizationTypeKey();
+	if 
+	(
+	((strcmp(szOriginCivKey, "CIVILIZATION_ISKA_JAPAN")) && !(strcmp(szDestCivKey, "CIVILIZATION_ISKA_JAPAN")))
+	|| 
+	((strcmp(szDestCivKey, "CIVILIZATION_ISKA_JAPAN")) && !(strcmp(szOriginCivKey, "CIVILIZATION_ISKA_JAPAN")))
+	)
+	{
+		return false;
+	}*/
+	CvString strOriginCiv = GET_PLAYER(pOriginCity->getOwner()).getCivilizationInfo().GetType();
+	CvString strDestCiv = GET_PLAYER(pDestCity->getOwner()).getCivilizationInfo().GetType();
+	//if (((strOriginCiv == "CIVILIZATION_ISKA_JAPAN") && (strDestCiv != "CIVILIZATION_ISKA_JAPAN"))
+	//|| ((strDestCiv == "CIVILIZATION_ISKA_JAPAN") && (strOriginCiv != "CIVILIZATION_ISKA_JAPAN")))
+
+	/*ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
+	if (pkScriptSystem)
+	{
+		CvLuaArgsHandle args;
+		args->Push(TRADE_CONNECTION_INTERNATIONAL);
+		args->Push(strOriginCiv);
+		args->Push(strDestCiv);
+
+		// Attempt to execute the game events.
+		// Will return false if there are no registered listeners.
+		bool bResult = false;
+		LuaSupport::CallHook(pkScriptSystem, "CanCreateTradeRoute", args.get(), bResult);
+	}*/
+
+	if ((eConnectionType == TRADE_CONNECTION_INTERNATIONAL) && ((strOriginCiv == "CIVILIZATION_ISKA_JAPAN") || (strDestCiv == "CIVILIZATION_ISKA_JAPAN")))
+	{
+		return false;
+	}
+
 	if (pOriginCity == NULL)
 	{
 		return false;

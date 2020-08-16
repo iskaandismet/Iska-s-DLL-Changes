@@ -401,7 +401,7 @@ void CvGameReligions::DoPlayerTurn(CvPlayer& kPlayer)
 	}
 
 	// Check for pantheon or great prophet spawning (now restricted so must occur before Industrial era)
-	if(kPlayer.GetFaith() > 0 && !kPlayer.isMinorCiv() && kPlayer.GetCurrentEra() < GC.getInfoTypeForString("ERA_INDUSTRIAL"))
+	if(kPlayer.GetFaith() > 0 && !kPlayer.isMinorCiv() && kPlayer.GetCurrentEra() < GC.getInfoTypeForString("ERA_INDUSTRIAL") && kPlayer.GetID() != 63)
 	{
 		if(CanCreatePantheon(kPlayer.GetID(), true) == FOUNDING_OK)
 		{
@@ -739,7 +739,7 @@ void CvGameReligions::FoundPantheon(PlayerTypes ePlayer, BeliefTypes eBelief)
 	SetMinimumFaithNextPantheon(GetMinimumFaithNextPantheon() + iIncrement);
 
 	ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
-	if(pkScriptSystem) 
+	if ((pkScriptSystem) && (GET_PLAYER(ePlayer).getCapitalCity() != NULL))
 	{
 		CvLuaArgsHandle args;
 		args->Push(ePlayer);
@@ -5499,6 +5499,11 @@ int CvReligionAI::ScoreBeliefForPlayer(CvBeliefEntry* pEntry)
 	CvFlavorManager* pFlavorManager = m_pPlayer->GetFlavorManager();
 	CvGameReligions* pGameReligions = GC.getGame().GetGameReligions();
 
+	//Kovachs would be ashamed
+	if (pEntry->IsSharia())
+	{
+		iRtnValue += 150;
+	}
 	//--------------------
 	// GET BACKGROUND DATA
 	//--------------------

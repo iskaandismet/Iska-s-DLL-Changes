@@ -58,6 +58,7 @@ CvBeliefEntry::CvBeliefEntry() :
 	m_iInquisitorPressureRetention(0),
 	m_iFaithBuildingTourism(0),
 
+	m_bSharia(false),
 	m_bPantheon(false),
 	m_bFounder(false),
 	m_bFollower(false),
@@ -331,6 +332,12 @@ int CvBeliefEntry::GetInquisitorPressureRetention() const
 int CvBeliefEntry::GetFaithBuildingTourism() const
 {
 	return m_iFaithBuildingTourism;
+}
+
+/// Accessor: is this Sharia
+bool CvBeliefEntry::IsSharia() const
+{
+	return m_bSharia;
 }
 
 /// Accessor: is this a belief a pantheon can adopt
@@ -629,6 +636,7 @@ bool CvBeliefEntry::CacheResults(Database::Results& kResults, CvDatabaseUtility&
 	m_iInquisitorPressureRetention    = kResults.GetInt("InquisitorPressureRetention");
 	m_iFaithBuildingTourism           = kResults.GetInt("FaithBuildingTourism");
 
+	m_bSharia						  = kResults.GetBool("Sharia");
 	m_bPantheon						  = kResults.GetBool("Pantheon");
 	m_bFounder						  = kResults.GetBool("Founder");
 	m_bFollower						  = kResults.GetBool("Follower");

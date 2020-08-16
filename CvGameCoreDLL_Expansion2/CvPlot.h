@@ -448,7 +448,7 @@ public:
 
 	void setFeatureType(FeatureTypes eNewValue, int iVariety = -1);
 
-	bool IsNaturalWonder() const;
+	bool IsNaturalWonder(bool orPseudoNatural = false) const;
 
 	ResourceTypes getResourceType(TeamTypes eTeam = NO_TEAM) const;
 	ResourceTypes getNonObsoleteResourceType(TeamTypes eTeam = NO_TEAM) const;

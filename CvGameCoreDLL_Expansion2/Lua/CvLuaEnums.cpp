@@ -234,9 +234,15 @@ int CvLuaEnums::pRegister(lua_State* L)
 	RegisterEnum(GAMEOPTION_NO_TUTORIAL);
 	RegisterEnum(GAMEOPTION_NO_RELIGION);
 
+	RegisterEnum(GAMEOPTION_SPAWNS);
+	RegisterEnum(GAMEOPTION_NO_B_LINING);
+	RegisterEnum(GAMEOPTION_DYNAMIC_FOW);
+	RegisterEnum(GAMEOPTION_BARBARIAN_CITIES);
 	RegisterEnum(GAMEOPTION_6PCS);
 	RegisterEnum(GAMEOPTION_NO_COLONIES);
 	RegisterEnum(GAMEOPTION_AI_ONLY);
+	RegisterEnum(GAMEOPTION_ALT_BARBARIANS);
+	RegisterEnum(GAMEOPTION_IGE);
 	RegisterEnum(NUM_GAMEOPTION_TYPES);
 
 

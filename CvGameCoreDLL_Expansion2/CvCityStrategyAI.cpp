@@ -2826,6 +2826,10 @@ bool CityStrategyAIHelpers::IsTestCityStrategy_CoastCity(CvCity* pCity)
 
 bool CityStrategyAIHelpers::IsTestCityStrategy_ManyTechsStolen(CvCity* pCity)
 {
+	if (pCity == NULL)
+	{
+		return false;
+	}
 	PlayerTypes ePlayer = pCity->getOwner();
 	CvEspionageAI* pEspionageAI = GET_PLAYER(ePlayer).GetEspionageAI();
 	CvCityEspionage* pCityEspionage = pCity->GetCityEspionage();
@@ -3094,6 +3098,11 @@ bool CityStrategyAIHelpers::IsTestCityStrategy_NeedTourismBuilding(CvCity *pCity
 
 bool CityStrategyAIHelpers::IsTestCityStrategy_GoodAirliftCity(CvCity *pCity)
 {
+	if (pCity->getOwner() == 63)
+	{
+		return false;
+	}
+
 	if (pCity->isCapital())
 	{
 		return true;

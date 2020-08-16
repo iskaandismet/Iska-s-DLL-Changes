@@ -3132,11 +3132,47 @@ bool CvUnit::CanAutomate(AutomateTypes eAutomate, bool bTestVisibility) const
 		return false;
 	}
 
-	if(eAutomate == 1)
+	if(eAutomate == 0)
 	{
-		if(AI_getUnitAIType() == UNITAI_MISSIONARY || AI_getUnitAIType() == UNITAI_ARCHAEOLOGIST)
+		if((AI_getUnitAIType() != UNITAI_WORKER) && (AI_getUnitAIType() != UNITAI_WORKER_SEA))
 		{
 			return false;
+		}
+
+		if(!bTestVisibility)
+		{
+			if(GC.getUNIT_WORKER_AUTOMATION_DISABLED() == 1)
+			{
+				return false;
+			}
+		}
+	}
+	if(eAutomate == 1)
+	{
+		if((GetBaseCombatStrength(true) == 0) || (getDomainType() == DOMAIN_AIR) || (getDomainType() == DOMAIN_IMMOBILE))
+		{
+			return false;
+		}
+
+		if(!bTestVisibility)
+		{
+			if(!GET_PLAYER(m_eOwner).GetHomelandAI()->IsAnyValidExploreMoves(this))
+			{
+				return false;
+			}
+		}
+
+		if (GC.getUNIT_AUTO_EXPLORE_FULL_DISABLED() == 1)
+		{
+			return false;
+		}
+
+		if(!bTestVisibility)
+		{
+			if(GC.getUNIT_AUTO_EXPLORE_DISABLED() == 1)
+			{
+				return false;
+			}
 		}
 	}
 	if(eAutomate == 2)
@@ -3160,6 +3196,8 @@ bool CvUnit::CanAutomate(AutomateTypes eAutomate, bool bTestVisibility) const
 			return false;
 		}
 	}
+
+	return true;
 }
 
 
@@ -5950,7 +5988,7 @@ bool CvUnit::createGreatWork()
 
 		if(IsGreatPerson())
 		{
-			kPlayer.DoGreatPersonExpended(getUnitType());
+			kPlayer.DoGreatPersonExpended(getUnitType(), pPlot->getX(), pPlot->getY());
 		}
 
 		kill(true);
@@ -6822,7 +6860,7 @@ bool CvUnit::DoFoundReligion()
 					pNotifications->Add(NOTIFICATION_FOUND_RELIGION, strBuffer, strSummary, pkPlot->getX(), pkPlot->getY(), -1, pkCity->GetID());
 				}
 				kOwner.GetReligions()->SetFoundingReligion(true);
-				kOwner.DoGreatPersonExpended(getUnitType());
+				kOwner.DoGreatPersonExpended(getUnitType(), pkPlot->getX(), pkPlot->getY());
 				kill(true);
 			}
 			else
@@ -6851,7 +6889,7 @@ bool CvUnit::DoFoundReligion()
 					}
 
 					pReligions->FoundReligion(getOwner(), eReligion, NULL, eBeliefs[0], eBeliefs[1], eBeliefs[2], eBeliefs[3], pkCity);
-					kOwner.DoGreatPersonExpended(getUnitType());
+					kOwner.DoGreatPersonExpended(getUnitType(), pkPlot->getX(), pkPlot->getY());
 					kill(true);
 				}
 				else
@@ -6957,7 +6995,7 @@ bool CvUnit::DoEnhanceReligion()
 					CvString strSummary = GetLocalizedText("TXT_KEY_NOTIFICATION_SUMMARY_ENHANCE_RELIGION");
 					pNotifications->Add(NOTIFICATION_ENHANCE_RELIGION, strBuffer, strSummary, pkPlot->getX(), pkPlot->getY(), -1, pkCity->GetID());
 				}
-				kOwner.DoGreatPersonExpended(getUnitType());
+				kOwner.DoGreatPersonExpended(getUnitType(), pkPlot->getX(), pkPlot->getY());
 				kill(true);
 			}
 			else
@@ -6971,7 +7009,7 @@ bool CvUnit::DoEnhanceReligion()
 
 					pReligions->EnhanceReligion(getOwner(), eReligion, eBelief1, eBelief2);
 
-					kOwner.DoGreatPersonExpended(getUnitType());
+					kOwner.DoGreatPersonExpended(getUnitType(), pkPlot->getX(), pkPlot->getY());
 					kill(true);
 				}
 				else
@@ -7120,7 +7158,8 @@ bool CvUnit::DoSpreadReligion()
 				if(IsGreatPerson())
 				{
 					CvPlayer& kPlayer = GET_PLAYER(getOwner());
-					kPlayer.DoGreatPersonExpended(getUnitType());
+					CvPlot* pPlot = plot();
+					kPlayer.DoGreatPersonExpended(getUnitType(), pPlot->getX(), pPlot->getY());
 				}
 
 				kill(true);
@@ -7428,7 +7467,7 @@ bool CvUnit::discover()
 
 	if(IsGreatPerson())
 	{
-		pPlayer->DoGreatPersonExpended(getUnitType());
+		pPlayer->DoGreatPersonExpended(getUnitType(), pPlot->getX(), pPlot->getY());
 	}
 
 	kill(true);
@@ -7639,7 +7678,7 @@ bool CvUnit::hurry()
 	if(IsGreatPerson())
 	{
 		CvPlayer& kPlayer = GET_PLAYER(getOwner());
-		kPlayer.DoGreatPersonExpended(getUnitType());
+		kPlayer.DoGreatPersonExpended(getUnitType(), pPlot->getX(), pPlot->getY());
 	}
 
 	kill(true);
@@ -7759,7 +7798,7 @@ bool CvUnit::trade()
 	if(IsGreatPerson())
 	{
 		CvPlayer& kPlayer = GET_PLAYER(getOwner());
-		kPlayer.DoGreatPersonExpended(getUnitType());
+		kPlayer.DoGreatPersonExpended(getUnitType(), pPlot->getX(), pPlot->getY());
 	}
 
 	kill(true);
@@ -7859,7 +7898,7 @@ bool CvUnit::buyCityState()
 	if (IsGreatPerson())
 	{
 		CvPlayer& kPlayer = GET_PLAYER(getOwner());
-		kPlayer.DoGreatPersonExpended(getUnitType());
+		kPlayer.DoGreatPersonExpended(getUnitType(), pPlot->getX(), pPlot->getY());
 	}
 
 	kill(true);
@@ -7932,7 +7971,7 @@ bool CvUnit::repairFleet()
 	if(IsGreatPerson())
 	{
 		CvPlayer& kPlayer = GET_PLAYER(getOwner());
-		kPlayer.DoGreatPersonExpended(getUnitType());
+		kPlayer.DoGreatPersonExpended(getUnitType(), pPlot->getX(), pPlot->getY());
 	}
 
 	kill(true);
@@ -8085,7 +8124,7 @@ bool CvUnit::DoCultureBomb()
 
 		if(IsGreatPerson())
 		{
-			kPlayer.DoGreatPersonExpended(getUnitType());
+			kPlayer.DoGreatPersonExpended(getUnitType(), pThisPlot->getX(), pThisPlot->getY());
 		}
 
 		kill(true);
@@ -8278,7 +8317,7 @@ bool CvUnit::goldenAge()
 
 	if(IsGreatPerson())
 	{
-		kPlayer.DoGreatPersonExpended(getUnitType());
+		kPlayer.DoGreatPersonExpended(getUnitType(), pPlot->getX(), pPlot->getY());
 	}
 
 	kill(true);
@@ -8400,7 +8439,7 @@ bool CvUnit::givePolicies()
 
 	if(IsGreatPerson())
 	{
-		kPlayer.DoGreatPersonExpended(getUnitType());
+		kPlayer.DoGreatPersonExpended(getUnitType(), pPlot->getX(), pPlot->getY());
 	}
 
 	kill(true);
@@ -8495,7 +8534,7 @@ bool CvUnit::blastTourism()
 
 	if(IsGreatPerson())
 	{
-		kUnitOwner.DoGreatPersonExpended(getUnitType());
+		kUnitOwner.DoGreatPersonExpended(getUnitType(), pPlot->getX(), pPlot->getY());
 	}
 
 	kill(true);
@@ -8747,7 +8786,7 @@ bool CvUnit::build(BuildTypes eBuild)
 
 				if(IsGreatPerson())
 				{
-					kPlayer.DoGreatPersonExpended(getUnitType());
+					kPlayer.DoGreatPersonExpended(getUnitType(), pPlot->getX(), pPlot->getY());
 				}
 
 				kill(true);
@@ -13389,7 +13428,7 @@ void CvUnit::setXY(int iX, int iY, bool bGroup, bool bUpdate, bool bShow, bool b
 
 				// Natural wonder that provides free promotions?
 				FeatureTypes eFeature = pAdjacentPlot->getFeatureType();
-				if(eFeature != NO_FEATURE && GC.getFeatureInfo(eFeature)->IsNaturalWonder())
+				if(eFeature != NO_FEATURE && GC.getFeatureInfo(eFeature)->IsNaturalWonder(true))
 				{
 					PromotionTypes ePromotion = (PromotionTypes)GC.getFeatureInfo(eFeature)->getAdjacentUnitFreePromotion();
 					if(ePromotion != NO_PROMOTION)
@@ -14219,9 +14258,16 @@ void CvUnit::changeExperience(int iChange, int iMax, bool bFromCombat, bool bInB
 	int iUnitExperience = iChange;
 	PromotionTypes eNewPromotion = NO_PROMOTION;
 
+	CvPlayer& kPlayer = GET_PLAYER(getOwner());
+
+	BuildingTypes eHeroicAge = (BuildingTypes) GC.getInfoTypeForString("BUILDING_HEROIC_AGE", true);
+	if (eHeroicAge != NO_BUILDING && kPlayer.getCapitalCity()->GetCityBuildings()->GetNumBuilding(eHeroicAge) > 0)
+	{
+		iUnitExperience = iUnitExperience * 2;
+	}
+
 	if(bFromCombat)
 	{
-		CvPlayer& kPlayer = GET_PLAYER(getOwner());
 
 		// Promotion that changes after combat?
 		for (int iI = 0; iI < GC.getNumPromotionInfos(); iI++)

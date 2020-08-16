@@ -624,6 +624,8 @@ public:
 	void incrementAdmiralsFromFaith();
 	int getEngineersFromFaith() const;
 	void incrementEngineersFromFaith();
+	int getArchitectsFromFaith() const;
+	void incrementArchitectsFromFaith();
 
 	int getGreatPeopleThresholdModifier() const;
 	void changeGreatPeopleThresholdModifier(int iChange);
@@ -662,7 +664,7 @@ public:
 	void DoUnitKilledCombat(PlayerTypes eKilledPlayer, UnitTypes eUnit);
 
 	// Great People Expenditure
-	void DoGreatPersonExpended(UnitTypes eGreatPersonUnit);
+	void DoGreatPersonExpended(UnitTypes eGreatPersonUnit, int iX, int iY);
 	int GetGreatPersonExpendGold() const;
 	void ChangeGreatPersonExpendGold(int iChange);
 
@@ -1625,6 +1627,7 @@ protected:
 	int m_iGeneralsFromFaith;
 	int m_iAdmiralsFromFaith;
 	int m_iEngineersFromFaith;
+	int m_iArchitectsFromFaith;
 	FAutoVariable<int, CvPlayer> m_iGreatPeopleThresholdModifier;
 	FAutoVariable<int, CvPlayer> m_iGreatGeneralsThresholdModifier;
 	int m_iGreatAdmiralsThresholdModifier;

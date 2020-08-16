@@ -59,9 +59,6 @@ public:
 
 	CvPlayer* GetPlayer();
 
-	//	Iska Health---------------------------------------------------------------------
-	int GetHealth() const;
-
 	void doTurn();
 
 	bool isCitySelected();
@@ -892,9 +889,6 @@ protected:
 	FAutoVariable<bool, CvCity> m_bEverCapital;
 	FAutoVariable<bool, CvCity> m_bIndustrialRouteToCapital;
 	FAutoVariable<bool, CvCity> m_bFeatureSurrounded;
-
-//	Iska Health---------------------------------------------------------------------
-	FAutoVariable<int, CvCity> m_iHealth;
 
 	FAutoVariable<PlayerTypes, CvCity> m_ePreviousOwner;
 	FAutoVariable<PlayerTypes, CvCity> m_eOriginalOwner;

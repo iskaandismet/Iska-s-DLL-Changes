@@ -2270,9 +2270,19 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible,
 								}
 							}
 						}
+
 						if (bHasNoAdjacencyRequirement)
 						{
 							ImprovementTypes eAdjacentImprovement =  pAdjacentPlot->getImprovementType();
+
+							//Khmer changes for no two angkor adjacent
+							ImprovementTypes eShrine = (ImprovementTypes) GC.getInfoTypeForString("IMPROVEMENT_ANGKOR_SHRINE", true);
+							ImprovementTypes eShrine_GA = (ImprovementTypes) GC.getInfoTypeForString("IMPROVEMENT_ANGKOR_SHRINE_GA", true);
+							if ((eAdjacentImprovement == eShrine && eAdjacentImprovement == eShrine_GA) || (eAdjacentImprovement == eShrine_GA && eAdjacentImprovement == eShrine))
+							{
+								return false;
+							}
+
 							if (eAdjacentImprovement != NO_IMPROVEMENT && eAdjacentImprovement == eImprovement)
 							{
 								return false;
@@ -5115,7 +5125,7 @@ void CvPlot::setOwner(PlayerTypes eNewValue, int iAcquiringCityID, bool bCheckUn
 
 				if(getFeatureType() != NO_FEATURE)
 				{
-					if(GC.getFeatureInfo(getFeatureType())->IsNaturalWonder())
+					if(GC.getFeatureInfo(getFeatureType())->IsNaturalWonder(true))
 					{
 						bShouldUpdateHappiness = true;
 					}
@@ -5566,7 +5576,7 @@ void CvPlot::setFeatureType(FeatureTypes eNewValue, int iVariety)
 		if(eNewValue != NO_FEATURE)
 		{
 			// Now a Natural Wonder here
-			if((eOldFeature == NO_FEATURE || !GC.getFeatureInfo(eOldFeature)->IsNaturalWonder()) && GC.getFeatureInfo(eNewValue)->IsNaturalWonder())
+			if((eOldFeature == NO_FEATURE || !GC.getFeatureInfo(eOldFeature)->IsNaturalWonder(true)) && GC.getFeatureInfo(eNewValue)->IsNaturalWonder(true))
 			{
 				GC.getMap().ChangeNumNaturalWonders(1);
 				GC.getMap().getArea(getArea())->ChangeNumNaturalWonders(1);
@@ -5575,7 +5585,7 @@ void CvPlot::setFeatureType(FeatureTypes eNewValue, int iVariety)
 		if(eOldFeature != NO_FEATURE)
 		{
 			// Was a Natural Wonder, isn't any more
-			if(GC.getFeatureInfo(eOldFeature)->IsNaturalWonder() && (eNewValue == NO_FEATURE || !GC.getFeatureInfo(eNewValue)->IsNaturalWonder()))
+			if(GC.getFeatureInfo(eOldFeature)->IsNaturalWonder(true) && (eNewValue == NO_FEATURE || !GC.getFeatureInfo(eNewValue)->IsNaturalWonder(true)))
 			{
 				GC.getMap().ChangeNumNaturalWonders(-1);
 				GC.getMap().getArea(getArea())->ChangeNumNaturalWonders(-1);
@@ -5597,14 +5607,14 @@ void CvPlot::setFeatureType(FeatureTypes eNewValue, int iVariety)
 
 //	--------------------------------------------------------------------------------
 /// Does this plot have a natural wonder?
-bool CvPlot::IsNaturalWonder() const
+bool CvPlot::IsNaturalWonder(bool orPseudoNatural) const
 {
 	FeatureTypes eFeature = getFeatureType();
 
 	if(eFeature == NO_FEATURE)
 		return false;
 
-	return GC.getFeatureInfo(eFeature)->IsNaturalWonder();
+	return GC.getFeatureInfo(eFeature)->IsNaturalWonder(true) || (orPseudoNatural && GC.getFeatureInfo(eFeature)->IsPseudoNaturalWonder());
 }
 
 //	--------------------------------------------------------------------------------
@@ -6880,7 +6890,7 @@ int CvPlot::calculateNatureYield(YieldTypes eYield, TeamTypes eTeam, bool bIgnor
 	if(isImpassable() || isMountain())
 	{
 		// No Feature, or the Feature isn't a Natural Wonder (which are impassable but allowed to be worked)
-		if(getFeatureType() == NO_FEATURE || !GC.getFeatureInfo(getFeatureType())->IsNaturalWonder())
+		if(getFeatureType() == NO_FEATURE || !GC.getFeatureInfo(getFeatureType())->IsNaturalWonder(true))
 		{
 			return 0;
 		}
@@ -6965,7 +6975,7 @@ int CvPlot::calculateNatureYield(YieldTypes eYield, TeamTypes eTeam, bool bIgnor
 				}
 			}
 			// Natural Wonders
-			if(m_eOwner != NO_PLAYER && pFeatureInfo->IsNaturalWonder())
+			if(m_eOwner != NO_PLAYER && pFeatureInfo->IsNaturalWonder(true))
 			{
 				int iMod = 0;
 
@@ -8069,7 +8079,7 @@ bool CvPlot::setRevealed(TeamTypes eTeam, bool bNewValue, bool bTerrainOnly, Tea
 		{
 			if(getFeatureType() != NO_FEATURE)
 			{
-				if(GC.getFeatureInfo(getFeatureType())->IsNaturalWonder())
+				if(GC.getFeatureInfo(getFeatureType())->IsNaturalWonder(true))
 				{
 					GET_TEAM(eTeam).ChangeNumNaturalWondersDiscovered(1);
 

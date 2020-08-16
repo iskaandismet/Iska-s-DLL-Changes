@@ -54,6 +54,20 @@ bool CvBarbarians::IsPlotValidForBarbCamp(CvPlot* pPlot)
 /// Camp cleared, so reset counter
 void CvBarbarians::DoBarbCampCleared(CvPlot* pPlot, PlayerTypes ePlayer)
 {
+	ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
+	if (pkScriptSystem)
+	{
+		CvLuaArgsHandle args;
+		args->Push(pPlot);
+		args->Push(pPlot->getX());
+		args->Push(pPlot->getY());
+
+		// Attempt to execute the game events.
+		// Will return false if there are no registered listeners.
+		bool bResult = false;
+		LuaSupport::CallHook(pkScriptSystem, "BarbarianCampCleared", args.get(), bResult);
+	}
+
 	m_aiPlotBarbCampSpawnCounter[pPlot->GetPlotIndex()] = -16;
 
 	pPlot->AddArchaeologicalRecord(CvTypes::getARTIFACT_BARBARIAN_CAMP(), ePlayer, NO_PLAYER);
@@ -95,6 +109,10 @@ void CvBarbarians::DoCampActivationNotice(CvPlot* pPlot)
 	// Raging
 	if (kGame.isOption(GAMEOPTION_RAGING_BARBARIANS))
 		iNumTurnsToSpawn /= 2;
+
+	// Raging
+	if (kGame.isOption(GAMEOPTION_ALT_BARBARIANS))
+		iNumTurnsToSpawn *= 2;
 
 	// Num Units Spawned
 	int iNumUnitsSpawned = m_aiPlotBarbCampNumUnitsSpawned[pPlot->GetPlotIndex()];
