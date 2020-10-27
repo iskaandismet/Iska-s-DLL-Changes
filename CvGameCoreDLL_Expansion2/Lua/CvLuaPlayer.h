@@ -991,6 +991,31 @@ protected:
 	// Warmongering
 	static int lGetWarmongerPreviewString(lua_State* L);
 	static int lGetLiberationPreviewString(lua_State* L);
+
+#if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+	static int lGetVassalGoldMaintenance(lua_State* L);
+	static int lIsVassalageAcceptable(lua_State* L);
+	static int lGetYieldPerTurnFromVassals(lua_State* L);
+	static int lGetHappinessFromVassals(lua_State* L);
+	static int lGetScoreFromVassals(lua_State* L);
+	static int lGetMilitaryAggressivePosture(lua_State* L);
+	static int lMoveRequestTooSoon(lua_State* L);
+	static int lGetPlayerMoveTroopsRequestCounter(lua_State* L);
+	static int lGetExpensePerTurnFromVassalTaxes(lua_State* L);
+	static int lGetMyShareOfVassalTaxes(lua_State* L);
+	static int lGetVassalTaxContribution(lua_State* L);
+	static int lGetVassalScore(lua_State* L);
+	static int lGetVassalTreatedScore(lua_State* L);
+	static int lGetVassalDemandScore(lua_State* L);
+	static int lGetVassalTaxScore(lua_State* L);
+	static int lGetVassalProtectScore(lua_State* L);
+	static int lGetVassalFailedProtectScore(lua_State* L);
+	static int lGetVassalTreatmentLevel(lua_State* L);
+	static int lGetVassalTreatmentToolTip(lua_State* L);
+	static int lGetVassalIndependenceTooltipAsMaster(lua_State* L);
+	static int lGetVassalIndependenceTooltipAsVassal(lua_State* L);
+	static int lGetMajorityReligion(lua_State* L);	// from CPP
+#endif
 };
 
 #endif //CVLUAPLAYER_H

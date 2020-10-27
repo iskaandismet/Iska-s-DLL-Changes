@@ -66,6 +66,9 @@ CvTechEntry::CvTechEntry(void):
 	m_piFlavorValue(NULL),
 	m_piPrereqOrTechs(NULL),
 	m_piPrereqAndTechs(NULL),
+#if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+	m_bVassalageTradingAllowed(false),
+#endif
 	m_pabFreePromotion(NULL)
 {
 }
@@ -127,6 +130,12 @@ bool CvTechEntry::CacheResults(Database::Results& kResults, CvDatabaseUtility& k
 	m_bWaterWork = kResults.GetBool("WaterWork");
 	m_iGridX = kResults.GetInt("GridX");
 	m_iGridY = kResults.GetInt("GridY");
+
+#if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+	if (MOD_DIPLOMACY_CIV4_FEATURES) {
+		m_bVassalageTradingAllowed = kResults.GetBool("VassalageTradingAllowed");
+	}
+#endif
 
 	//References
 	const char* szTextVal = NULL;
@@ -1832,9 +1841,18 @@ void CvTeamTechs::SetHasTech(TechTypes eIndex, bool bNewValue)
 /// Accessor: does team have a tech?
 bool CvTeamTechs::HasTech(TechTypes eIndex) const
 {
-	if(eIndex == NO_TECH)
+	if (eIndex == NO_TECH)
 	{
 		return true;
+	}
+	if (eIndex == 0)
+	{
+		return true;
+	}
+
+	if ((m_pTeam == NULL) || (m_pabHasTech == NULL))
+	{
+		return false;	
 	}
 
 	CvAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
@@ -2039,17 +2057,6 @@ int CvTeamTechs::GetResearchCost(TechTypes eTech) const
 
 	int iCost = pkTechInfo->GetResearchCost();
 
-	//if ((m_pTeam->GetID() == NULL) || (m_pTeam->GetID() == NO_TEAM))
-	if (m_pTeam->getHandicapType() == NULL)
-	{
-		return 0;
-	}
-
-	if (m_pTeam->getHandicapType() == NULL)
-	{
-		return 0;
-	}
-
 	CvHandicapInfo* pkHandicapInfo = GC.getHandicapInfo(m_pTeam->getHandicapType());
 	if(pkHandicapInfo)
 	{
@@ -2142,3 +2149,11 @@ int CvTeamTechs::GetMaxResearchOverflow(TechTypes eTech, PlayerTypes ePlayer) co
 
 	return iReturnValue;
 }
+
+#if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+/// Can you permit vassalage to be traded?
+bool CvTechEntry::IsVassalageTradingAllowed() const
+{
+	return m_bVassalageTradingAllowed;
+}
+#endif

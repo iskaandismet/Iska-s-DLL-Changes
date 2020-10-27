@@ -221,6 +221,11 @@ public:
 
 	bool IsCityAttackOnly() const;
 	void ChangeCityAttackOnlyCount(int iChange);
+	//aa0905766k//
+	bool IsEmbarkedToLandFlatCost() const;
+	void ChangeEmbarkedToLandFlatCostCount(int iChange);
+	//
+
 
 	bool IsCaptureDefeatedEnemy() const;
 	void ChangeCaptureDefeatedEnemyCount(int iChange);
@@ -1292,6 +1297,9 @@ protected:
 	FAutoVariable<int, CvUnit> m_iMustSetUpToRangedAttackCount;
 	FAutoVariable<int, CvUnit> m_iRangeAttackIgnoreLOSCount;
 	int m_iCityAttackOnlyCount;
+	//aa0905766k//
+	int m_iUnitEmbarkedToLandFlatCostCount;
+	//
 	int m_iCaptureDefeatedEnemyCount;
 	FAutoVariable<int, CvUnit> m_iRangedSupportFireCount;
 	FAutoVariable<int, CvUnit> m_iAlwaysHealCount;

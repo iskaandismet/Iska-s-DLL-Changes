@@ -140,6 +140,10 @@ protected:
 	{
 		return BasicLuaMethod(L, &CvDeal::AddDefensivePact);
 	};
+	static int lAddAlliance(lua_State* L)
+	{
+		return BasicLuaMethod(L, &CvDeal::AddAlliance);
+	};
 	static int lAddResearchAgreement(lua_State* L)
 	{
 		return BasicLuaMethod(L, &CvDeal::AddResearchAgreement);
@@ -237,6 +241,25 @@ protected:
 	static int lRemoveVoteCommitment(lua_State* L); // Too many args for template, defined in cpp
 
 	static TradedItemList::iterator m_iterator;
+
+#if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+	static int lAddTechTrade(lua_State* L)
+	{
+		return BasicLuaMethod(L, &CvDeal::AddTechTrade);
+	};
+	static int lAddVassalageTrade(lua_State* L)
+	{
+		return BasicLuaMethod(L, &CvDeal::AddVassalageTrade);
+	};
+	static int lAddRevokeVassalageTrade(lua_State* L)
+	{
+		return BasicLuaMethod(L, &CvDeal::AddRevokeVassalageTrade);
+	};
+	static int lRemoveTechTrade(lua_State* L)
+	{
+		return BasicLuaMethod(L, &CvDeal::RemoveTechTrade);
+	};
+#endif
 };
 
 #endif //CVLUADEAL_H

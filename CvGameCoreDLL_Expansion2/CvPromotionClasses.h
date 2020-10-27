@@ -163,6 +163,9 @@ public:
 	bool IsHealIfDefeatExcludeBarbarians() const;
 	bool IsEmbarkedAllWater() const;
 	bool IsCityAttackOnly() const;
+	//aa0905766k//
+	bool IsEmbarkedToLandFlatCost() const;
+	//
 	bool IsCaptureDefeatedEnemy() const;
 	bool IsIgnoreGreatGeneralBenefit() const;
 	bool IsIgnoreZOC() const;
@@ -316,6 +319,9 @@ protected:
 	bool m_bHealIfDefeatExcludesBarbarians;
 	bool m_bEmbarkedAllWater;
 	bool m_bCityAttackOnly;
+		//aa0905766k//
+	bool m_iUnitEmbarkedToLandFlatCostCount;
+	//
 	bool m_bCaptureDefeatedEnemy;
 	bool m_bIgnoreGreatGeneralBenefit;
 	bool m_bIgnoreZOC;

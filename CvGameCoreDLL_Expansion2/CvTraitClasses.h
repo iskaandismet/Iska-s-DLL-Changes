@@ -89,6 +89,10 @@ public:
 	int GetGoldenAgeGreatArtistRateModifier() const;
 	int GetGoldenAgeGreatMusicianRateModifier() const;
 	int GetGoldenAgeGreatWriterRateModifier() const;
+	//aa0905766k//
+	int GetGreatArtistRateModifier() const;
+	int GetGreatMerchantRateModifier() const;
+	//
 	int GetExtraEmbarkMoves() const;
 	int GetFreeUnitClassType() const;
 	int GetNaturalWonderFirstFinderGold() const;
@@ -106,6 +110,10 @@ public:
 	int GetDOFGreatPersonModifier() const;
 	int GetLuxuryHappinessRetention() const;
 	int GetExtraSpies() const;
+	//aa0905766k//
+	int GetCultureBombRadius() const;
+	int GetGoldenAgeBonusModifier() const;
+	//
 	int GetUnresearchedTechBonusFromKills() const;
 	int GetExtraFoundedCityTerritoryClaimRange() const;
 	int GetFreeSocialPoliciesPerEra() const;
@@ -123,6 +131,9 @@ public:
 	ImprovementTypes GetCombatBonusImprovement() const;
 	BuildingTypes GetFreeBuilding() const;
 	BuildingTypes GetFreeBuildingOnConquest() const;
+	//////////////aa0905766k//////////////
+	BuildTypes GetBuildCultureBomb() const;
+	//////////////////////////////////////
 
 	bool IsFightWellDamaged() const;
 	bool IsMoveFriendlyWoodsAsRoad() const;
@@ -162,6 +173,9 @@ public:
 	int GetMovesChangeUnitCombat(const int unitCombatID) const;
 	int GetMaintenanceModifierUnitCombat(const int unitCombatID) const;
 	int GetImprovementYieldChanges(ImprovementTypes eIndex1, YieldTypes eIndex2) const;
+	//aa0905766k//
+	int GetImprovementCoastalLandYieldChanges(ImprovementTypes eIndex1, YieldTypes eIndex2) const;
+	//
 	int GetSpecialistYieldChanges(SpecialistTypes eIndex1, YieldTypes eIndex2) const;
 	int GetUnimprovedFeatureYieldChanges(FeatureTypes eIndex1, YieldTypes eIndex2) const;
 	FreeResourceXCities GetFreeResourceXCities(ResourceTypes eResource) const;
@@ -211,6 +225,10 @@ protected:
 	int m_iGoldenAgeGreatArtistRateModifier;
 	int m_iGoldenAgeGreatMusicianRateModifier;
 	int m_iGoldenAgeGreatWriterRateModifier;
+	//aa0905766k//
+	int m_iGreatArtistRateModifier;
+	int m_iGreatMerchantRateModifier;
+	//
 	int m_iObsoleteTech;
 	int m_iPrereqTech;
 	int m_iExtraEmbarkMoves;
@@ -230,6 +248,10 @@ protected:
 	int m_iDOFGreatPersonModifier;
 	int m_iLuxuryHappinessRetention;
 	int m_iExtraSpies;
+	//aa0905766k//
+	int m_CultureBombRadius;
+	int m_GoldenAgeBonusModifier;
+	//
 	int m_iUnresearchedTechBonusFromKills;
 	int m_iExtraFoundedCityTerritoryClaimRange;
 	int m_iFreeSocialPoliciesPerEra;
@@ -247,6 +269,9 @@ protected:
 	ImprovementTypes m_eCombatBonusImprovement;
 	BuildingTypes m_eFreeBuilding;
 	BuildingTypes m_eFreeBuildingOnConquest;
+	//////////////aa0905766k//////////////
+	BuildTypes m_eBuildCultureBomb;
+	/////////////////////////////////////
 
 	bool m_bFightWellDamaged;
 	bool m_bMoveFriendlyWoodsAsRoad;
@@ -283,6 +308,9 @@ protected:
 	int* m_piMovesChangeUnitCombats;
 	int* m_piMaintenanceModifierUnitCombats;
 	int** m_ppiImprovementYieldChanges;
+	//aa0905766k//
+	int** m_ppiImprovementCoastalLandYieldChanges;
+	//
 	int** m_ppiSpecialistYieldChanges;
 	int** m_ppiUnimprovedFeatureYieldChanges;
 
@@ -494,6 +522,16 @@ public:
 	{
 		return m_iGoldenAgeGreatWriterRateModifier;
 	};
+		//aa0905766k//
+	int GetGreatArtistRateModifier() const
+	{
+		return m_iGreatArtistRateModifier;
+	};
+	int GetGreatMerchantRateModifier() const
+	{
+		return m_iGreatMerchantRateModifier;
+	};
+	//
 	int GetExtraEmbarkMoves() const
 	{
 		return m_iExtraEmbarkMoves;
@@ -559,6 +597,15 @@ public:
 	int GetExtraSpies() const
 	{
 		return m_iExtraSpies;
+	};
+		//aa0905766k
+	int GetCultureBombRadius() const
+	{
+		return m_CultureBombRadius;
+	};
+	int GetGoldenAgeBonusModifier() const
+	{
+		return m_GoldenAgeBonusModifier;
 	};
 	int GetUnresearchedTechBonusFromKills() const
 	{
@@ -725,6 +772,9 @@ public:
 	int GetMovesChangeUnitCombat(const int unitCombatID) const;
 	int GetMaintenanceModifierUnitCombat(const int unitCombatID) const;
 	int GetImprovementYieldChange(ImprovementTypes eImprovement, YieldTypes eYield) const;
+	//aa0905766k//
+	int GetImprovementCoastalLandYieldChanges(ImprovementTypes eImprovement, YieldTypes eYield) const;
+	//
 	int GetSpecialistYieldChange(SpecialistTypes eSpecialist, YieldTypes eYield) const;
 	int GetUnimprovedFeatureYieldChange(FeatureTypes eFeature, YieldTypes eYield) const;
 	FreeResourceXCities GetFreeResourceXCities(ResourceTypes eResource) const;
@@ -737,6 +787,9 @@ public:
 	int GetCapitalBuildingDiscount(BuildingTypes eBuilding);
 	BuildingTypes GetFreeBuilding() const;
 	BuildingTypes GetFreeBuildingOnConquest() const;
+	//aa0905766k//
+	BuildTypes GetBuildCultureBomb() const;
+	//
 	void SetDefeatedBarbarianCampGuardType(UnitTypes eType)
 	{
 		m_eCampGuardType = eType;
@@ -816,6 +869,10 @@ private:
 	int m_iGoldenAgeGreatArtistRateModifier;
 	int m_iGoldenAgeGreatMusicianRateModifier;
 	int m_iGoldenAgeGreatWriterRateModifier;
+	//aa0905766k//
+	int m_iGreatArtistRateModifier;
+	int m_iGreatMerchantRateModifier;
+	//
 	int m_iExtraEmbarkMoves;
 	int m_iNaturalWonderFirstFinderGold;
 	int m_iNaturalWonderSubsequentFinderGold;
@@ -839,6 +896,10 @@ private:
 	int m_iTradeRouteResourceModifier;
 	int m_iUniqueLuxuryCities;
 	int m_iUniqueLuxuryQuantity;
+	//aa0905766k//
+	int m_CultureBombRadius;
+	int m_GoldenAgeBonusModifier;
+	//
 	int m_iUniqueLuxuryCitiesPlaced;  
 	int m_iWorkerSpeedModifier;
 	int m_iAfraidMinorPerTurnInfluence; 
@@ -873,6 +934,9 @@ private:
 	ImprovementTypes m_eCombatBonusImprovement;
 	BuildingTypes m_eFreeBuilding;
 	BuildingTypes m_eFreeBuildingOnConquest;
+		//////////////////aa0905766k///////////////
+	BuildTypes m_eBuildCultureBomb;
+	//////////////////////////////////////////
 
 	int m_iExtraYieldThreshold[NUM_YIELD_TYPES];
 	int m_iFreeCityYield[NUM_YIELD_TYPES];
@@ -900,6 +964,9 @@ private:
 	std::vector<int> m_paiMaintenanceModifierUnitCombat;
 
 	std::vector< Firaxis::Array<int, NUM_YIELD_TYPES > > m_ppaaiImprovementYieldChange;
+	//aa0905766k//
+	std::vector< Firaxis::Array<int, NUM_YIELD_TYPES > > m_ppaaiImprovementCoastalLandYieldChanges;
+	//
 	std::vector< Firaxis::Array<int, NUM_YIELD_TYPES > > m_ppaaiSpecialistYieldChange;
 	std::vector< Firaxis::Array<int, NUM_YIELD_TYPES > > m_ppaaiUnimprovedFeatureYieldChange;
 

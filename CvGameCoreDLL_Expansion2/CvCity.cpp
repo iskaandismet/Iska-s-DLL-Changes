@@ -8042,7 +8042,20 @@ int CvCity::getFood() const
 int CvCity::getFoodTimes100() const
 {
 	VALIDATE_OBJECT
-	return m_iFood;
+	//ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
+	int iChange = 0;
+	//if(pkScriptSystem)
+	//{
+	//	CvLuaArgsHandle args;
+	//	args->Push(getX());
+	//	args->Push(getY());
+	//	args->Push(GetID());
+	//	args->Push(m_iFood);
+
+		// With any luck this runs faster than the Tapir at the begining of Apocalypto
+	//	LuaSupport::CallAccumulator(pkScriptSystem, "GetIskaFoodChange", args.get(), iChange);
+	//}
+	return m_iFood + (iChange * 100);
 }
 
 
@@ -8057,6 +8070,22 @@ void CvCity::setFood(int iNewValue)
 void CvCity::setFoodTimes100(int iNewValue)
 {
 	VALIDATE_OBJECT
+	//ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
+	//if(pkScriptSystem)
+	//{
+	//	CvLuaArgsHandle args;
+	//	args->Push(getX());
+	//	args->Push(getY());
+	//	args->Push(GetID());
+	//	args->Push(iNewValue);
+
+		// With any luck this runs faster than the Tapir at the begining of Apocalypto
+	//	int iChange = 0;
+	//	LuaSupport::CallAccumulator(pkScriptSystem, "GetIskaFoodChange", args.get(), iChange);
+	//	iNewValue += (iChange * 100);
+	//}
+
+
 	if(getFoodTimes100() != iNewValue)
 	{
 		m_iFood = iNewValue;
@@ -9254,10 +9283,22 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 		CvYieldInfo* pYield = GC.getYieldInfo(eIndex);
 		if(pYield)
 		{
-			iTempMod = pYield->getGoldenAgeYieldMod();
-			iModifier += iTempMod;
-			if(toolTipSink)
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE", iTempMod);
+			//aa0905766k//
+			if(GET_PLAYER(getOwner()).GetPlayerTraits()->GetGoldenAgeBonusModifier() > 0)
+			{	
+				iTempMod = pYield->getGoldenAgeYieldMod() + pYield->getGoldenAgeYieldMod()*(GET_PLAYER(getOwner()).GetPlayerTraits()->GetGoldenAgeBonusModifier())/100;
+				iModifier += iTempMod;  
+				if(toolTipSink)
+					GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE", iTempMod);
+			}
+			else
+			{
+				iTempMod = pYield->getGoldenAgeYieldMod();
+				iModifier += iTempMod;
+				if(toolTipSink)
+					GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE", iTempMod);
+			}
+			//
 		}
 	}
 
@@ -9403,6 +9444,24 @@ int CvCity::getBaseYieldRate(YieldTypes eIndex) const
 	iValue += GetBaseYieldRateFromSpecialists(eIndex);
 	iValue += GetBaseYieldRateFromMisc(eIndex);
 	iValue += GetBaseYieldRateFromReligion(eIndex);
+
+	if (eIndex == YIELD_FOOD)
+	{
+		ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
+		if(pkScriptSystem)
+		{
+			CvLuaArgsHandle args;
+			args->Push(getX());
+			args->Push(getY());
+			args->Push(GetID());
+			args->Push(iValue);
+
+			int iChange = 0;
+			// With any luck this runs faster than the Tapir at the begining of Apocalypto
+			LuaSupport::CallAccumulator(pkScriptSystem, "GetIskaFoodChange", args.get(), iChange);
+			iValue += iChange;
+		}
+	}
 
 	return iValue;
 }
@@ -11051,8 +11110,8 @@ void CvCity::BuyPlot(int iPlotX, int iPlotY)
 		CvLuaArgsHandle args;
 		args->Push(getOwner());
 		args->Push(GetID());
-		args->Push(plot()->getX());
-		args->Push(plot()->getY());
+		args->Push(iPlotX);
+		args->Push(iPlotY);
 		args->Push(true); // bGold
 		args->Push(false); // bFaith/bCulture
 
@@ -11609,19 +11668,22 @@ void CvCity::popOrder(int iNum, bool bFinish, bool bChoose)
 				bool bResult = CreateBuilding(eConstructBuilding);
 				DEBUG_VARIABLE(bResult);
 				CvAssertMsg(bResult, "CreateBuilding failed");
-
-				ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
-				if (pkScriptSystem) 
+				
+				if (GetID())
 				{
-					CvLuaArgsHandle args;
-					args->Push(getOwner());
-					args->Push(GetID());
-					args->Push(eConstructBuilding);
-					args->Push(false); // bGold
-					args->Push(false); // bFaith/bCulture
+					ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
+					if (pkScriptSystem) 
+					{
+						CvLuaArgsHandle args;
+						args->Push(getOwner());
+						args->Push(GetID());
+						args->Push(eConstructBuilding);
+						args->Push(false); // bGold
+						args->Push(false); // bFaith/bCulture
 
-					bool bScriptResult;
-					LuaSupport::CallHook(pkScriptSystem, "CityConstructed", args.get(), bScriptResult);
+						bool bScriptResult;
+						LuaSupport::CallHook(pkScriptSystem, "CityConstructed", args.get(), bScriptResult);
+					}
 				}
 
 				iProductionNeeded = getProductionNeeded(eConstructBuilding) * 100;

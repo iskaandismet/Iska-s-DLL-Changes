@@ -937,7 +937,7 @@ bool CvUnitMission::CanStartMission(UnitHandle hUnit, int iMission, int iData1, 
 	else if(iMission == CvTypes::getMISSION_ARCHITECT())
 	{
 		CvString szUnitType = hUnit->getUnitInfo().GetType();
-		if (szUnitType == "UNIT_ARCHITECT")
+		if ((szUnitType == "UNIT_ARCHITECT") || (szUnitType == "UNIT_MALI_MANSA"))
 		{
 			return true;
 		}
@@ -950,7 +950,15 @@ bool CvUnitMission::CanStartMission(UnitHandle hUnit, int iMission, int iData1, 
 			return true;
 		}
 	}
-	else if((iMission == CvTypes::getMISSION_GOVERNMENT()) || (iMission == CvTypes::getMISSION_AUTHORITY()))
+	else if(iMission == CvTypes::getMISSION_AUTHORITY())
+	{
+		CvString szUnitType = hUnit->getUnitInfo().GetType();
+		if ((szUnitType == "UNIT_DIGNITARY") || (szUnitType == "UNIT_EGYPTIAN_VIZIER") || (szUnitType == "UNIT_MALI_MANSA"))
+		{
+			return true;
+		}
+	}
+	else if(iMission == CvTypes::getMISSION_GOVERNMENT())
 	{
 		CvString szUnitType = hUnit->getUnitInfo().GetType();
 		if (szUnitType == "UNIT_DIGNITARY")

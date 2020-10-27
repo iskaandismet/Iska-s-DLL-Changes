@@ -133,6 +133,9 @@ CvPromotionEntry::CvPromotionEntry():
 	m_bHealIfDefeatExcludesBarbarians(false),
 	m_bEmbarkedAllWater(false),
 	m_bCityAttackOnly(false),
+	//aa0905766k//
+	m_iUnitEmbarkedToLandFlatCostCount(false),
+	//
 	m_bCaptureDefeatedEnemy(false),
 	m_bIgnoreGreatGeneralBenefit(false),
 	m_bIgnoreZOC(false),
@@ -230,6 +233,9 @@ bool CvPromotionEntry::CacheResults(Database::Results& kResults, CvDatabaseUtili
 	m_bHealIfDefeatExcludesBarbarians = kResults.GetBool("HealIfDestroyExcludesBarbarians");
 	m_bEmbarkedAllWater = kResults.GetBool("EmbarkedAllWater");
 	m_bCityAttackOnly = kResults.GetBool("CityAttackOnly");
+	//aa0905766k//
+	m_iUnitEmbarkedToLandFlatCostCount = kResults.GetBool("IsEmbarkedToLandFlatCost");
+	//
 	m_bCaptureDefeatedEnemy = kResults.GetBool("CaptureDefeatedEnemy");
 	m_bIgnoreGreatGeneralBenefit = kResults.GetBool("IgnoreGreatGeneralBenefit");
 	m_bIgnoreZOC = kResults.GetBool("IgnoreZOC");
@@ -1379,6 +1385,13 @@ bool CvPromotionEntry::IsCityAttackOnly() const
 {
 	return m_bCityAttackOnly;
 }
+
+//aa0905766k//
+bool CvPromotionEntry::IsEmbarkedToLandFlatCost() const
+{
+	return m_iUnitEmbarkedToLandFlatCostCount;
+}
+
 
 /// Accessor: Is a defeated enemy captured?
 bool CvPromotionEntry::IsCaptureDefeatedEnemy() const

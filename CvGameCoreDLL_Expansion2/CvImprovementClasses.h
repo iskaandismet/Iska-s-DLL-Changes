@@ -136,6 +136,14 @@ public:
 	int* GetAdjacentCityYieldChangeArray();
 	int GetAdjacentMountainYieldChange(int i) const;
 	int* GetAdjacentMountainYieldChangeArray();
+	//aa0905766k//
+	int GetAdjacentPastureYieldChange(int i) const;
+	int* GetAdjacentPastureYieldChangeArray();
+	int GetAdjacentBonusResourceYieldChange(int i) const;
+	int* GetAdjacentBonusResourceYieldChangeArray();
+	int GetAdjacentLuxuryResourceYield(int i) const;
+	int* GetAdjacentLuxuryResourceYieldArray();
+	//
 
 	bool GetTerrainMakesValid(int i) const;
 	bool GetFeatureMakesValid(int i) const;
@@ -228,6 +236,11 @@ protected:
 	int* m_piFreshWaterChange;
 	int* m_piAdjacentCityYieldChange;
 	int* m_piAdjacentMountainYieldChange;
+	//aa0905766k//
+	int* m_piAdjacentPastureYieldChange;
+	int* m_piAdjacentBonusResourceYieldChange;
+	int* m_piAdjacentLuxuryResourceYield;
+	//
 	int* m_piFlavorValue;
 
 	bool* m_pbTerrainMakesValid;

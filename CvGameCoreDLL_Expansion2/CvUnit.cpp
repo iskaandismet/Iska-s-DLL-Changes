@@ -154,6 +154,9 @@ CvUnit::CvUnit() :
 	, m_iMustSetUpToRangedAttackCount("CvUnit::m_iMustSetUpToRangedAttackCount", m_syncArchive)
 	, m_iRangeAttackIgnoreLOSCount("CvUnit::m_iRangeAttackIgnoreLOSCount", m_syncArchive)
 	, m_iCityAttackOnlyCount(0)
+	//aa0905766k//
+	, m_iUnitEmbarkedToLandFlatCostCount(0)
+	//
 	, m_iCaptureDefeatedEnemyCount(0)
 	, m_iRangedSupportFireCount("CvUnit::m_iRangedSupportFireCount", m_syncArchive)
 	, m_iAlwaysHealCount("CvUnit::m_iAlwaysHealCount", m_syncArchive)
@@ -755,6 +758,9 @@ void CvUnit::reset(int iID, UnitTypes eUnit, PlayerTypes eOwner, bool bConstruct
 	m_iCityAttackOnlyCount = 0;
 	m_iCaptureDefeatedEnemyCount = 0;
 	m_iRangedSupportFireCount = 0;
+	//aa0905766k//
+	m_iUnitEmbarkedToLandFlatCostCount = 0;
+	//
 	m_iAlwaysHealCount = 0;
 	m_iHealOutsideFriendlyCount = 0;
 	m_iHillsDoubleMoveCount = 0;
@@ -1271,6 +1277,50 @@ void CvUnit::kill(bool bDelay, PlayerTypes ePlayer /*= NO_PLAYER*/)
 			GET_PLAYER(getOwner()).GetDiplomacyAI()->ChangeWarValueLost(ePlayer, iValue);
 			// Bad guy's viewpoint
 			GET_PLAYER(ePlayer).GetDiplomacyAI()->ChangeOtherPlayerWarValueLost(getOwner(), ePlayer, iValue);
+
+#if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+			if (MOD_DIPLOMACY_CIV4_FEATURES) {
+				CvCity* pLoopCity;
+				int iCityLoop;
+				bool bNearLoserCity = false;
+				bool bInMyTerritory = false;
+				PlayerTypes eLoopPlayer;
+
+				TeamTypes eMaster =  GET_TEAM(getTeam()).GetMaster();
+
+				// Check to see if Master failed to protect one of our units...
+				if(eMaster != NO_TEAM) {
+					// Unit killed inside my territory
+					if(plot()->getOwner() == getOwner()) {
+						bInMyTerritory = true;
+					}
+					// Unit killed near one of my cities
+					else if(plot()->getOwner() != ePlayer) {
+						// Loop through loser's cities.
+						for(pLoopCity = GET_PLAYER(getOwner()).firstCity(&iCityLoop); pLoopCity != NULL; pLoopCity = GET_PLAYER(getOwner()).nextCity(&iCityLoop))
+						{
+							if(plotDistance(plot()->getX(), plot()->getY(), pLoopCity->getX(), pLoopCity->getY()) <= GC.getVASSALAGE_FAILED_PROTECT_CITY_DISTANCE())
+							{
+								bNearLoserCity = true;
+								break;
+							}
+						}
+					}
+
+					// Something actually happened to warrant this check
+					if(bInMyTerritory || bNearLoserCity) {
+						for(int iPlayerLoop = 0; iPlayerLoop < MAX_PLAYERS; iPlayerLoop++)
+						{
+							eLoopPlayer = (PlayerTypes) iPlayerLoop;
+
+							if(GET_PLAYER(eLoopPlayer).getTeam() == eMaster) {
+								GET_PLAYER(getOwner()).GetDiplomacyAI()->ChangeVassalFailedProtectValue(eLoopPlayer, iValue);
+							}
+						}
+					}
+				}
+			}
+#endif
 		}
 
 		if(NO_UNIT != getLeaderUnitType())
@@ -3940,6 +3990,27 @@ void CvUnit::ChangeCityAttackOnlyCount(int iChange)
 	}
 }
 
+//aa0905766k//
+
+bool CvUnit::IsEmbarkedToLandFlatCost() const
+{
+	VALIDATE_OBJECT
+	return m_iUnitEmbarkedToLandFlatCostCount > 0;
+}
+
+//	--------------------------------------------------------------------------------
+void CvUnit::ChangeEmbarkedToLandFlatCostCount(int iChange)
+{
+	VALIDATE_OBJECT
+	if(iChange != 0)
+	{
+		m_iUnitEmbarkedToLandFlatCostCount += iChange;
+	}
+}
+
+
+//
+
 //	--------------------------------------------------------------------------------
 bool CvUnit::IsCaptureDefeatedEnemy() const
 {
@@ -6564,6 +6635,22 @@ bool CvUnit::pillage()
 			{
 				jumpToNearestValidPlot();
 			}
+
+			//aa0905766k//
+			 ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
+			if (pkScriptSystem)
+			{
+				CvLuaArgsHandle args;
+				args->Push(getOwner());
+				args->Push(GetID());
+				args->Push(pPlot->getX());
+				args->Push(pPlot->getY());
+
+				bool bResult;
+				LuaSupport::CallHook(pkScriptSystem, "UnitPillageTile", args.get(), bResult);
+			}
+			//
+
 		}
 	}
 	else if(pPlot->isRoute())
@@ -8741,6 +8828,13 @@ bool CvUnit::build(BuildTypes eBuild)
 					{
 						PerformCultureBomb(pkImprovementInfo->GetCultureBombRadius());
 					}
+					//////////////////////////////////////////////////////////
+					if (kPlayer.GetPlayerTraits()->GetBuildCultureBomb() == eBuild)
+					{
+						PerformCultureBomb(kPlayer.GetPlayerTraits()->GetCultureBombRadius());
+					}
+
+					/////////////////////////////////////////////////////////
 				}
 			}
 			else if(pkBuildInfo->getRoute() != NO_ROUTE)
@@ -10212,9 +10306,12 @@ int CvUnit::GetGenericMaxStrengthModifier(const CvUnit* pOtherUnit, const CvPlot
 			iModifier += iTempModifier;
 
 			// Bonus against city states?
-			if(pBattlePlot->isCity() && GET_PLAYER(pBattlePlot->getOwner()).isMinorCiv())
+			if (pBattlePlot->getOwner() != -1)
 			{
-				iModifier += kPlayer.GetPlayerTraits()->GetCityStateCombatModifier();
+				if(pBattlePlot->isCity() && GET_PLAYER(pBattlePlot->getOwner()).isMinorCiv())
+				{
+					iModifier += kPlayer.GetPlayerTraits()->GetCityStateCombatModifier();
+				}
 			}
 
 			// Founder Belief bonus (this must be a city controlled by an enemy)
@@ -17432,6 +17529,9 @@ void CvUnit::setHasPromotion(PromotionTypes eIndex, bool bNewValue)
 		changeFreePillageMoveCount((thisPromotion.IsFreePillageMoves()) ? iChange: 0);
 		ChangeEmbarkAllWaterCount((thisPromotion.IsEmbarkedAllWater()) ? iChange: 0);
 		ChangeCityAttackOnlyCount((thisPromotion.IsCityAttackOnly()) ? iChange: 0);
+		//aa0905766k//
+		ChangeEmbarkedToLandFlatCostCount((thisPromotion.IsEmbarkedToLandFlatCost()) ? iChange: 0);
+		//
 		ChangeCaptureDefeatedEnemyCount((thisPromotion.IsCaptureDefeatedEnemy()) ? iChange: 0);
 		ChangeCanHeavyChargeCount((thisPromotion.IsCanHeavyCharge()) ? iChange : 0);
 
@@ -17826,6 +17926,10 @@ void CvUnit::read(FDataStream& kStream)
 
 	kStream >> m_iCityAttackOnlyCount;
 
+//aa0905766k//
+	kStream >> m_iUnitEmbarkedToLandFlatCostCount;
+	//	
+
 	kStream >> m_iCaptureDefeatedEnemyCount;
 
 	kStream >> m_iGreatAdmiralCount;
@@ -17950,6 +18054,9 @@ void CvUnit::write(FDataStream& kStream) const
 	kStream << m_iCanHeavyCharge;
 	kStream << m_iNumExoticGoods;
 	kStream << m_iCityAttackOnlyCount;
+	//aa0905766k//
+	kStream << m_iUnitEmbarkedToLandFlatCostCount;
+	//
 	kStream << m_iCaptureDefeatedEnemyCount;
 	kStream << m_iGreatAdmiralCount;
 

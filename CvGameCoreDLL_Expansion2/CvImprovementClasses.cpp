@@ -123,6 +123,11 @@ CvImprovementEntry::CvImprovementEntry(void):
 	m_piFreshWaterChange(NULL),
 	m_piAdjacentCityYieldChange(NULL),
 	m_piAdjacentMountainYieldChange(NULL),
+	//aa0905766k//
+	m_piAdjacentPastureYieldChange(NULL),
+	m_piAdjacentBonusResourceYieldChange(NULL),
+	m_piAdjacentLuxuryResourceYield(NULL),
+	//
 	m_piFlavorValue(NULL),
 	m_pbTerrainMakesValid(NULL),
 	m_pbFeatureMakesValid(NULL),
@@ -148,6 +153,11 @@ CvImprovementEntry::~CvImprovementEntry(void)
 	SAFE_DELETE_ARRAY(m_piFreshWaterChange);
 	SAFE_DELETE_ARRAY(m_piAdjacentCityYieldChange);
 	SAFE_DELETE_ARRAY(m_piAdjacentMountainYieldChange);
+	//aa0905766k//
+	SAFE_DELETE_ARRAY(m_piAdjacentPastureYieldChange);
+	SAFE_DELETE_ARRAY(m_piAdjacentBonusResourceYieldChange);
+	SAFE_DELETE_ARRAY(m_piAdjacentLuxuryResourceYield);
+	//
 	SAFE_DELETE_ARRAY(m_piFlavorValue);
 	SAFE_DELETE_ARRAY(m_pbTerrainMakesValid);
 	SAFE_DELETE_ARRAY(m_pbFeatureMakesValid);
@@ -285,6 +295,11 @@ bool CvImprovementEntry::CacheResults(Database::Results& kResults, CvDatabaseUti
 	kUtility.SetYields(m_piYieldPerEra, "Improvement_YieldPerEra", "ImprovementType", szImprovementType);
 	kUtility.SetYields(m_piAdjacentCityYieldChange, "Improvement_AdjacentCityYields", "ImprovementType", szImprovementType);
 	kUtility.SetYields(m_piAdjacentMountainYieldChange, "Improvement_AdjacentMountainYieldChanges", "ImprovementType", szImprovementType);
+	//aa0905766k//
+	kUtility.SetYields(m_piAdjacentPastureYieldChange, "Improvement_AdjacentPastureYieldChanges", "ImprovementType", szImprovementType);
+	kUtility.SetYields(m_piAdjacentBonusResourceYieldChange, "Improvement_AdjacentBonusResourceYieldChanges", "ImprovementType", szImprovementType);
+	kUtility.SetYields(m_piAdjacentLuxuryResourceYield, "Improvement_AdjacentLuxuryResourceYields", "ImprovementType", szImprovementType);
+	//
 	kUtility.SetYields(m_piCoastalLandYieldChange, "Improvement_CoastalLandYields", "ImprovementType", szImprovementType);
 	kUtility.SetYields(m_piFreshWaterChange, "Improvement_FreshWaterYields", "ImprovementType", szImprovementType);
 	kUtility.SetYields(m_piHillsYieldChange, "Improvement_HillsYields", "ImprovementType", szImprovementType);
@@ -907,6 +922,45 @@ int CvImprovementEntry::GetAdjacentMountainYieldChange(int i) const
 	CvAssertMsg(i > -1, "Index out of bounds");
 	return m_piAdjacentMountainYieldChange ? m_piAdjacentMountainYieldChange[i] : 0;
 }
+//aa0905766k//
+int CvImprovementEntry::GetAdjacentPastureYieldChange(int i) const
+{
+	CvAssertMsg(i < NUM_YIELD_TYPES, "Index out of bounds");
+	CvAssertMsg(i > -1, "Index out of bounds");
+	return m_piAdjacentPastureYieldChange ? m_piAdjacentPastureYieldChange[i] : 0;
+}
+
+int* CvImprovementEntry::GetAdjacentPastureYieldChangeArray()
+{
+	return m_piAdjacentPastureYieldChange;
+}
+
+//aa0905766k//
+int CvImprovementEntry::GetAdjacentBonusResourceYieldChange(int i) const
+{
+	CvAssertMsg(i < NUM_YIELD_TYPES, "Index out of bounds");
+	CvAssertMsg(i > -1, "Index out of bounds");
+	return m_piAdjacentBonusResourceYieldChange ? m_piAdjacentBonusResourceYieldChange[i] : 0;
+}
+
+int* CvImprovementEntry::GetAdjacentBonusResourceYieldChangeArray()
+{
+	return m_piAdjacentBonusResourceYieldChange;
+}
+//aa0905766k//
+int CvImprovementEntry::GetAdjacentLuxuryResourceYield(int i) const
+{
+	CvAssertMsg(i < NUM_YIELD_TYPES, "Index out of bounds");
+	CvAssertMsg(i > -1, "Index out of bounds");
+	return m_piAdjacentLuxuryResourceYield ? m_piAdjacentLuxuryResourceYield[i] : 0;
+}
+
+
+int* CvImprovementEntry::GetAdjacentLuxuryResourceYieldArray()
+{
+	return m_piAdjacentLuxuryResourceYield;
+}
+//
 
 int* CvImprovementEntry::GetAdjacentMountainYieldChangeArray()
 {

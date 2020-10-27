@@ -59,6 +59,7 @@ void CvLuaDeal::PushMethods(lua_State* L, int t)
 	Method(AddAllowEmbassy);
 	Method(AddOpenBorders);
 	Method(AddDefensivePact);
+	Method(AddAlliance);
 	Method(AddResearchAgreement);
 	Method(AddTradeAgreement);
 	Method(AddPermamentAlliance);
@@ -86,6 +87,13 @@ void CvLuaDeal::PushMethods(lua_State* L, int t)
 	Method(ChangeThirdPartyWarDuration);
 	Method(ChangeThirdPartyPeaceDuration);
 	Method(ChangeThirdPartyEmbargoDuration);
+
+#if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+	Method(AddTechTrade);
+	Method(AddVassalageTrade);
+	Method(AddRevokeVassalageTrade);
+	Method(RemoveTechTrade);
+#endif
 }
 
 //------------------------------------------------------------------------------

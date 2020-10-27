@@ -281,6 +281,9 @@ public:
 	bool IsHasDefensivePact(TeamTypes eIndex) const;
 	void SetHasDefensivePact(TeamTypes eIndex, bool bNewValue);
 
+	bool IsHasAlliance(TeamTypes eIndex) const;
+	void SetHasAlliance(TeamTypes eIndex, bool bNewValue);
+
 	int GetTotalNumResearchAgreements() const;
 	bool IsHasResearchAgreement(TeamTypes eIndex) const;
 	void SetHasResearchAgreement(TeamTypes eIndex, bool bNewValue);
@@ -397,6 +400,64 @@ public:
 
 	void setDynamicTurnsSimultMode(bool simultaneousTurns);
 
+#if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+	bool IsVoluntaryVassal(TeamTypes eIndex) const;
+	bool IsVassal(TeamTypes eIndex) const;
+	void setVassal(TeamTypes eIndex, bool bNewValue, bool bVoluntary = false);
+
+	TeamTypes GetMaster() const;
+
+	bool IsVassalOfSomeone() const;
+	
+	bool canBecomeVassal(TeamTypes eTeam, bool bIgnoreAlreadyVassal = false) const;
+	bool CanMakeVassal(TeamTypes eTeam, bool bIgnoreAlreadyVassal = false) const;
+	void DoBecomeVassal(TeamTypes eTeam, bool bVoluntary = false);
+	bool canEndVassal(TeamTypes eTeam) const;
+	bool canEndAllVassal();
+	void DoEndVassal(TeamTypes eTeam, bool bPeaceful, bool bSuppressNotification);
+
+	void DoLiberateVassal(TeamTypes eTeam);
+	bool CanLiberateVassal(TeamTypes eTeam) const;
+
+	void DoUpdateVassalWarPeaceRelationships();
+
+	int getNumCitiesWhenVassalMade() const;
+	void setNumCitiesWhenVassalMade(int iValue);
+	int getTotalPopulationWhenVassalMade() const;
+	void setTotalPopulationWhenVassalMade(int iValue);
+
+	int GetNumTurnsIsVassal() const;
+	void SetNumTurnsIsVassal(int iValue);
+	void ChangeNumTurnsIsVassal(int iChange);
+
+	int GetNumTurnsSinceVassalEnded(TeamTypes eTeam) const;
+	void SetNumTurnsSinceVassalEnded(TeamTypes eTeam, int iValue);
+	void ChangeNumTurnsSinceVassalEnded(TeamTypes eTeam, int iChange);
+	bool IsTooSoonForVassal(TeamTypes eTeam) const;
+
+	bool IsVassalLockedIntoWar(TeamTypes eOtherTeam) const;
+
+	int getVassalageTradingAllowedCount() const;
+	bool IsVassalageTradingAllowed() const;
+	void changeVassalageTradingAllowedCount(int iChange);
+
+	int GetNumVassals();
+
+	bool IsTradeTech(TechTypes eTech) const;
+	void SetTradeTech(TechTypes eTech, bool bValue);
+
+	void AcquireMap(TeamTypes eIndex, bool bTerritoryOnly = false);
+
+	void DoApplyVassalTax(PlayerTypes ePlayer, int iPercent);
+	bool CanSetVassalTax(PlayerTypes ePlayer) const;
+	void SetVassalTax(PlayerTypes ePlayer, int iPercent);
+	int GetVassalTax(PlayerTypes ePlayer) const;
+
+	int GetNumTurnsSinceVassalTaxSet(PlayerTypes ePlayer) const;
+	void SetNumTurnsSinceVassalTaxSet(PlayerTypes ePlayer, int iValue);
+	void ChangeNumTurnsSinceVassalTaxSet(PlayerTypes ePlayer, int iChange);
+#endif
+
 	// Wrapper for giving Players on this Team a notification message
 	void AddNotification(NotificationTypes eNotificationType, const char* strMessage, const char* strSummary, int iX = -1, int iY = -1, int iGameDataIndex = -1, int iExtraGameData = -1);
 
@@ -468,6 +529,7 @@ protected:
 	Firaxis::Array< bool, REALLY_MAX_TEAMS > m_abEmbassy;
 	Firaxis::Array< bool, REALLY_MAX_TEAMS > m_abOpenBorders;
 	Firaxis::Array< bool, REALLY_MAX_TEAMS > m_abDefensivePact;
+	Firaxis::Array< bool, REALLY_MAX_TEAMS > m_abAlliance;
 	Firaxis::Array< bool, REALLY_MAX_TEAMS > m_abResearchAgreement;
 	Firaxis::Array< bool, REALLY_MAX_TEAMS > m_abTradeAgreement;
 	Firaxis::Array< bool, REALLY_MAX_TEAMS > m_abForcePeace;
@@ -478,6 +540,9 @@ protected:
 	                 FAllocArrayType< bool,
 	                 FAllocArrayType< bool,
 	                 FAllocArrayType< bool,
+#if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+					 FAllocArrayType< bool,
+#endif
 	                 FAllocArrayType< int,
 	                 FAllocArrayType< int,
 	                 FAllocArrayType< int,
@@ -491,10 +556,30 @@ protected:
 	                 FAllocArray2DType< int,
 	                 FAllocArray2DType< int,
 	                 FAllocArray2DType< int,
-	                 FAllocBase< 0, 0 > > > > > > > > > > > > > > > > > > CvTeamData;
+	                 FAllocBase< 0, 0 > > > > > > > > > > > > > > > > > > 
+ #if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+					 >
+#endif
+					 CvTeamData;
 	CvTeamData m_BatchData;
 
 	int* m_aiForceTeamVoteEligibilityCount;
+
+#if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+	int m_iVassalageTradingAllowedCount;
+	bool* m_pabTradeTech;
+
+	TeamTypes m_eMaster;
+	bool m_bIsVoluntaryVassal;
+	int m_iNumTurnsIsVassal;
+	int m_iNumCitiesWhenVassalMade;
+	int m_iTotalPopulationWhenVassalMade;
+	Firaxis::Array< int, REALLY_MAX_TEAMS > m_aiNumTurnsSinceVassalEnded;
+
+	// Only major civs can be taxed
+	Firaxis::Array< int, MAX_MAJOR_CIVS > m_aiNumTurnsSinceVassalTaxSet;
+	Firaxis::Array< int, MAX_MAJOR_CIVS > m_aiVassalTax;
+#endif
 
 	bool* m_abCanLaunch;
 	bool* m_abVictoryAchieved;
@@ -533,7 +618,11 @@ protected:
 	void announceTechToPlayers(TechTypes eIndex, bool bPartial = false);
 
 	void DoNowAtWarOrPeace(TeamTypes eTeam, bool bWar);
+#if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+	void DoDeclareWar(TeamTypes eTeam, bool bDefensivePact, bool bMinorAllyPact = false, bool bVassal = false);
+#else
 	void DoDeclareWar(TeamTypes eTeam, bool bDefensivePact, bool bMinorAllyPact = false);
+#endif
 	void DoMakePeace(TeamTypes eTeam, bool bBumpUnits, bool bSuppressNotification = false);
 };
 

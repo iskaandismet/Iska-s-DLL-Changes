@@ -1505,6 +1505,23 @@ public:
 
 	CvPlayerAchievements& GetPlayerAchievements(){return m_kPlayerAchievements;}
 
+#if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+	CvString GetVassalIndependenceTooltipAsMaster(PlayerTypes ePlayer) const;
+	CvString GetVassalIndependenceTooltipAsVassal() const;
+
+	int GetScoreFromVassals() const;
+	int GetScoreFromVassal(PlayerTypes ePlayer) const;
+
+	int GetYieldPerTurnFromVassals(YieldTypes eYield) const;
+
+	int GetHappinessFromVassals() const;
+	int GetHappinessFromVassal(PlayerTypes ePlayer) const;
+
+	int GetVassalGoldMaintenanceMod() const;
+	void SetVassalGoldMaintenanceMod(int iValue);
+	void ChangeVassalGoldMaintenanceMod(int iChange);
+#endif
+
 	bool hasTurnTimerExpired();
 
 protected:
@@ -1840,6 +1857,10 @@ protected:
 	FAutoVariable<std::vector<int>, CvPlayer> m_paiProjectMaking;
 	FAutoVariable<std::vector<int>, CvPlayer> m_paiHurryCount;
 	FAutoVariable<std::vector<int>, CvPlayer> m_paiHurryModifier;
+
+#if defined(MOD_DIPLOMACY_CIV4_FEATURES)
+	FAutoVariable<int, CvPlayer> m_iVassalGoldMaintenanceMod;
+#endif
 
 	FAutoVariable<std::vector<bool>, CvPlayer> m_pabLoyalMember;
 

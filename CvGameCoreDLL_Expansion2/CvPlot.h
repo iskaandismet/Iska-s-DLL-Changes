@@ -118,6 +118,12 @@ public:
 	bool isAdjacent(const CvPlot* pPlot) const;
 	bool isAdjacentToLand() const;
 	bool isAdjacentToLand_Cached() const { return m_bIsAdjacentToLand; }
+
+	//aa0905766k//
+	bool isAdjacentToLuxury() const;
+	bool isAdjacentToLuxury_Cached() const { return m_bIsAdjacentToLuxury; }
+	//
+
 	bool isShallowWater() const;
 	bool isAdjacentToShallowWater() const;
 	bool isCoastalLand(int iMinWaterSize = -1) const;
@@ -844,6 +850,9 @@ protected:
 	bool m_bResourceLinkedCityActive:1;
 	bool m_bImprovedByGiftFromMajor:1;
 	bool m_bIsAdjacentToLand:1;				// Cached value, do not serialize
+	//aa0905766k////
+	bool m_bIsAdjacentToLuxury:1;
+	////
 	bool m_bIsImpassable:1;					// Cached value, do not serialize
 
 	CvArchaeologyData m_kArchaeologyData;
